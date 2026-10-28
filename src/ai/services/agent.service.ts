@@ -81,13 +81,19 @@ export class AgentService {
           throw new Error('Meta API credentials not configured');
         }
         const url = `${metaConfig.baseUrl}${metaConfig.agentEndpoint}`;
+        const promptText = `${systemPrompt}\n\nPregunta del agricultor: "${input.userMessage}"\nResponde en español chileno respetuoso como asistente de báscula de AgroControl basándote estrictamente en los registros verificados.`;
         const response = await firstValueFrom(
           this.httpService.post(
             url,
             {
-              model: 'muse-spark-8b-instruct',
-              system_prompt: systemPrompt,
-              message: input.userMessage,
+              model: 'muse-spark-1.3',
+              input: [
+                {
+                  role: 'user',
+                  content: [{ type: 'input_text', text: promptText }],
+                },
+              ],
+              stream: false,
             },
             {
               headers: {
@@ -99,11 +105,18 @@ export class AgentService {
           ),
         );
         const data = response.data;
+        const msgOutput = data.output?.find((o: Record<string, unknown>) => o.type === 'message');
+        const replyText =
+          (msgOutput?.content as Array<Record<string, unknown>>)?.[0]?.text as string ||
+          data.agentResponse ||
+          data.reply ||
+          'Respuesta procesada por Meta AI.';
+
         return {
-          agentResponse: data.agentResponse || data.message || data.reply,
+          agentResponse: replyText,
           intent: this.detectIntent(input.userMessage),
           groundedDeliveriesCount: context?.deliveries.length || 0,
-          provider: 'meta-muse-spark',
+          provider: 'meta-muse-spark-1.3',
           referencedDeliveries: context?.deliveries || [],
         };
       }

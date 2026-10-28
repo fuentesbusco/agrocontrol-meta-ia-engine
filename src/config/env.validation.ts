@@ -44,19 +44,19 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
-  META_API_URL: string = 'https://graph.facebook.com/v21.0';
+  META_API_URL: string = 'https://api.meta.ai/v1';
 
   @IsString()
   @IsOptional()
-  META_VISION_ENDPOINT: string = '/sam3/predict';
+  META_VISION_ENDPOINT: string = '/responses';
 
   @IsString()
   @IsOptional()
-  META_OCR_ENDPOINT: string = '/glimmer/extract';
+  META_OCR_ENDPOINT: string = '/responses';
 
   @IsString()
   @IsOptional()
-  META_AGENT_ENDPOINT: string = '/spark/chat';
+  META_AGENT_ENDPOINT: string = '/responses';
 
   // Modal Endpoints
   @IsString()
@@ -65,15 +65,18 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
-  MODAL_VISION_URL: string = 'https://atelierbusco--agrocontrol-sam3-predict.modal.run';
+  MODAL_VISION_URL: string =
+    'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-sam3-predict.us-east.modal.run';
 
   @IsString()
   @IsOptional()
-  MODAL_OCR_URL: string = 'https://atelierbusco--agrocontrol-glimmer-extract.modal.run';
+  MODAL_OCR_URL: string =
+    'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-glimm-66f1ce.us-east.modal.run';
 
   @IsString()
   @IsOptional()
-  MODAL_AGENT_URL: string = 'https://atelierbusco--agrocontrol-spark-agent.modal.run';
+  MODAL_AGENT_URL: string =
+    'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-spark-agent.us-east.modal.run';
 
   // Fireworks Serverless Inference
   @IsString()
@@ -94,7 +97,7 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
-  FIREWORKS_AGENT_MODEL: string = 'accounts/fireworks/models/muse-spark-8b-instruct';
+  FIREWORKS_AGENT_MODEL: string = 'accounts/fireworks/models/muse-spark-open';
 }
 
 export function validate(config: Record<string, unknown>) {

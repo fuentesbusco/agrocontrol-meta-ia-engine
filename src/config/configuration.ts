@@ -62,22 +62,22 @@ export default (): AppConfiguration => {
       },
       meta: {
         apiKey: process.env.META_API_KEY || '',
-        baseUrl: process.env.META_API_URL || 'https://graph.facebook.com/v21.0',
-        visionEndpoint: process.env.META_VISION_ENDPOINT || '/sam3/predict',
-        ocrEndpoint: process.env.META_OCR_ENDPOINT || '/glimmer/extract',
-        agentEndpoint: process.env.META_AGENT_ENDPOINT || '/spark/chat',
+        baseUrl: process.env.META_API_URL || 'https://api.meta.ai/v1',
+        visionEndpoint: process.env.META_VISION_ENDPOINT || '/responses',
+        ocrEndpoint: process.env.META_OCR_ENDPOINT || '/responses',
+        agentEndpoint: process.env.META_AGENT_ENDPOINT || '/responses',
       },
       modal: {
         apiKey: process.env.MODAL_API_KEY || '',
         visionUrl:
           process.env.MODAL_VISION_URL ||
-          'https://atelierbusco--agrocontrol-sam3-predict.modal.run',
+          'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-sam3-predict.us-east.modal.run',
         ocrUrl:
           process.env.MODAL_OCR_URL ||
-          'https://atelierbusco--agrocontrol-glimmer-extract.modal.run',
+          'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-glimm-66f1ce.us-east.modal.run',
         agentUrl:
           process.env.MODAL_AGENT_URL ||
-          'https://atelierbusco--agrocontrol-spark-agent.modal.run',
+          'https://agrocontrol-meta-ai-engine--agrocontrol-multimodal-spark-agent.us-east.modal.run',
       },
       fireworks: {
         apiKey: process.env.FIREWORKS_API_KEY || '',
@@ -92,7 +92,7 @@ export default (): AppConfiguration => {
           'accounts/fireworks/models/muse-glimmer-v1',
         agentModel:
           process.env.FIREWORKS_AGENT_MODEL ||
-          'accounts/fireworks/models/muse-spark-8b-instruct',
+          'accounts/fireworks/models/muse-spark-open',
       },
     },
   };
