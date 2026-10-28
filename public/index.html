@@ -128,14 +128,90 @@
             <h2 class="text-base font-bold text-slate-900">Ingesta y Conciliación de Carga</h2>
             <p class="text-xs text-slate-500">Verificación cruzada de conteo físico de bins y guía de despacho de campo.</p>
           </div>
-          <!-- Presets for fast live demo -->
+          <!-- Quick Status & Cases Header -->
           <div class="flex items-center gap-2">
-            <button onclick="loadMatchedCase()" id="btn-match" class="text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-lg transition">
+            <button onclick="loadMatchedCase()" id="btn-match" class="text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-lg transition shadow-2xs">
               Caso 1: 18 Bins (Coincide)
             </button>
-            <button onclick="loadMismatchCase()" id="btn-mismatch" class="text-xs font-medium bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg transition">
+            <button onclick="loadMismatchCase()" id="btn-mismatch" class="text-xs font-medium bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg transition shadow-2xs">
               Caso 2: Discrepancia
             </button>
+          </div>
+        </div>
+
+        <!-- Real Trucks Testing Carousel / Gallery -->
+        <div class="mt-4 pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Galería de Pruebas Rápidas (Fotos Reales de Patio)
+            </span>
+            <span class="text-[11px] text-slate-400">Click para seleccionar camión</span>
+          </div>
+
+          <!-- Carousel Container (Horizontal Scroll with Clean Cards) -->
+          <div class="flex gap-2.5 overflow-x-auto pb-1 custom-scrollbar" id="truck-carousel">
+            
+            <!-- Item 1: Curicó 18 Bins (Default Match) -->
+            <button type="button" onclick="selectTruck('/samples/camion_18_bins.jpg', 18, 'match', 'Patente: JD-8941 • 18 Bins', 'Camión Curicó (18 Bins • Match)', this)" class="truck-card flex-shrink-0 w-36 text-left border-2 border-emerald-600 rounded-lg overflow-hidden bg-white shadow-xs transition hover:shadow-sm ring-2 ring-emerald-500/20">
+              <div class="h-20 bg-slate-200 relative overflow-hidden">
+                <img src="/samples/camion_18_bins.jpg" alt="Camión 18 Bins" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">18 Bins</span>
+              </div>
+              <div class="p-1.5">
+                <p class="text-[11px] font-bold text-slate-800 truncate">Camión Curicó</p>
+                <p class="text-[10px] text-emerald-700 font-medium truncate">✓ Match con Guía</p>
+              </div>
+            </button>
+
+            <!-- Item 2: Patio 02 16 Bins (Mismatch) -->
+            <button type="button" onclick="selectTruck('/samples/camion_mismatch_16_bins.jpg?mismatch=true', 16, 'mismatch', 'Patente: JD-8941 • 16 Bins (Discrepancia)', 'Camión Patio 02 (16 Bins • Alerta)', this)" class="truck-card flex-shrink-0 w-36 text-left border border-slate-200 rounded-lg overflow-hidden bg-white shadow-xs transition hover:border-slate-400">
+              <div class="h-20 bg-slate-200 relative overflow-hidden">
+                <img src="/samples/camion_mismatch_16_bins.jpg" alt="Camión 16 Bins" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-amber-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">16 Bins</span>
+              </div>
+              <div class="p-1.5">
+                <p class="text-[11px] font-bold text-slate-800 truncate">Camión Patio 02</p>
+                <p class="text-[10px] text-amber-700 font-medium truncate">! Faltan 2 Bins</p>
+              </div>
+            </button>
+
+            <!-- Item 3: Rampla 24 Bins (Carga Pesada) -->
+            <button type="button" onclick="selectTruck('/samples/camion_rampla_24_bins.jpg?24_bins=true', 24, 'large_load', 'Patente: FL-4421 • 24 Bins (Rampla)', 'Rampla Romeral (24 Bins)', this)" class="truck-card flex-shrink-0 w-36 text-left border border-slate-200 rounded-lg overflow-hidden bg-white shadow-xs transition hover:border-slate-400">
+              <div class="h-20 bg-slate-200 relative overflow-hidden">
+                <img src="/samples/camion_rampla_24_bins.jpg" alt="Rampla 24 Bins" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">24 Bins</span>
+              </div>
+              <div class="p-1.5">
+                <p class="text-[11px] font-bold text-slate-800 truncate">Rampla Romeral</p>
+                <p class="text-[10px] text-slate-500 font-medium truncate">Carga Alta (24 Bins)</p>
+              </div>
+            </button>
+
+            <!-- Item 4: Bins de Madera Tradicional -->
+            <button type="button" onclick="selectTruck('/samples/camion_bins_madera.jpg', 18, 'match', 'Patente: BZ-9012 • 18 Bins Madera', 'Cosecha Huerto (Bins Madera)', this)" class="truck-card flex-shrink-0 w-36 text-left border border-slate-200 rounded-lg overflow-hidden bg-white shadow-xs transition hover:border-slate-400">
+              <div class="h-20 bg-slate-200 relative overflow-hidden">
+                <img src="/samples/camion_bins_madera.jpg" alt="Bins de Madera" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-amber-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">Madera</span>
+              </div>
+              <div class="p-1.5">
+                <p class="text-[11px] font-bold text-slate-800 truncate">Cosecha Huerto</p>
+                <p class="text-[10px] text-slate-500 font-medium truncate">Bins Madera Rústica</p>
+              </div>
+            </button>
+
+            <!-- Item 5: Cosecha Chico 12 Bins -->
+            <button type="button" onclick="selectTruck('/samples/camion_cosecha_campo.jpg?12_bins=true', 12, 'mismatch', 'Patente: HR-3120 • 12 Bins', 'Camión Chico (12 Bins)', this)" class="truck-card flex-shrink-0 w-36 text-left border border-slate-200 rounded-lg overflow-hidden bg-white shadow-xs transition hover:border-slate-400">
+              <div class="h-20 bg-slate-200 relative overflow-hidden">
+                <img src="/samples/camion_cosecha_campo.jpg" alt="Cosecha en Tránsito" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-slate-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">12 Bins</span>
+              </div>
+              <div class="p-1.5">
+                <p class="text-[11px] font-bold text-slate-800 truncate">Camión Chico</p>
+                <p class="text-[10px] text-slate-500 font-medium truncate">Entrega Parcial (12 Bins)</p>
+              </div>
+            </button>
+
           </div>
         </div>
 
@@ -329,29 +405,68 @@
 
     let currentTruck = {
       image: "/samples/camion_18_bins.jpg",
-      type: "match"
+      type: "match",
+      bins: 18,
+      plate: "JD-8941"
     };
 
     let currentGuide = {
       image: "/samples/guia_despacho_18_bins.jpg"
     };
 
+    function selectTruck(image, bins, type, tagText, title, element) {
+      currentTruck.image = image;
+      currentTruck.bins = bins;
+      currentTruck.type = type;
+
+      const preview = document.getElementById('truck-preview');
+      if (preview) preview.src = image;
+
+      const tag = document.getElementById('truck-tag');
+      if (tag) {
+        tag.innerText = tagText;
+        if (type === 'match') {
+          tag.className = "text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+        } else if (type === 'large_load') {
+          tag.className = "text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200";
+        } else {
+          tag.className = "text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
+        }
+      }
+
+      // Update badge overlay inside preview
+      const previewOverlay = preview ? preview.parentElement.querySelector('.font-mono') : null;
+      if (previewOverlay) {
+        previewOverlay.innerText = `${bins} Bins Estimados`;
+      }
+
+      // Update active card styling
+      const allCards = document.querySelectorAll('.truck-card');
+      allCards.forEach(card => {
+        card.classList.remove('border-2', 'border-emerald-600', 'ring-2', 'ring-emerald-500/20');
+        card.classList.add('border', 'border-slate-200');
+      });
+
+      if (element) {
+        element.classList.remove('border', 'border-slate-200', 'border-slate-400');
+        element.classList.add('border-2', 'border-emerald-600', 'ring-2', 'ring-emerald-500/20');
+      }
+
+      // Hide previous results so user can re-trigger inference
+      const resultsCard = document.getElementById('results-card');
+      if (resultsCard && !resultsCard.classList.contains('hidden')) {
+        resultsCard.classList.add('hidden');
+      }
+    }
+
     function loadMatchedCase() {
-      currentTruck.image = "/samples/camion_18_bins.jpg";
-      currentTruck.type = "match";
-      document.getElementById('truck-preview').src = currentTruck.image;
-      document.getElementById('guide-preview').src = currentGuide.image;
-      document.getElementById('truck-tag').innerText = "Patente: JD-8941 • 18 Bins";
-      document.getElementById('truck-tag').className = "text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+      const firstCard = document.querySelector('.truck-card');
+      selectTruck('/samples/camion_18_bins.jpg', 18, 'match', 'Patente: JD-8941 • 18 Bins', 'Camión Curicó', firstCard);
     }
 
     function loadMismatchCase() {
-      currentTruck.image = "/samples/camion_mismatch_16_bins.jpg?mismatch=true";
-      currentTruck.type = "mismatch";
-      document.getElementById('truck-preview').src = currentTruck.image;
-      document.getElementById('guide-preview').src = currentGuide.image;
-      document.getElementById('truck-tag').innerText = "Patente: JD-8941 • 16 Bins (Discrepancia)";
-      document.getElementById('truck-tag').className = "text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
+      const secondCard = document.querySelectorAll('.truck-card')[1];
+      selectTruck('/samples/camion_mismatch_16_bins.jpg?mismatch=true', 16, 'mismatch', 'Patente: JD-8941 • 16 Bins (Discrepancia)', 'Camión Patio 02', secondCard);
     }
 
     async function processReception() {

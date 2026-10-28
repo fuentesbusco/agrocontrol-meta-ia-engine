@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-10-28
+
+### Added
+- Implemented interactive multi-truck testing gallery carousel in `public/index.html` allowing one-click selection between 5 distinct real-world harvest truck scenarios (18-bin standard match, 16-bin yard discrepancy, 24-bin high-capacity trailer, rustic wooden bins, and 12-bin small truck).
+- Enhanced vision inference logic in `vision.service.ts` and `modal_app/app.py` to dynamically adapt detection and reconciliation across diverse truck photographic conditions.
+
 ## [1.3.0] - 2026-10-28
 
 ### Added

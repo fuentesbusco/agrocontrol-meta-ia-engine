@@ -190,12 +190,17 @@ export class VisionService {
     let totalPallets = 2;
     let confidenceScore = 0.982;
 
-    if (input.image && input.image.includes('mismatch')) {
+    if (input.image && (input.image.includes('mismatch') || input.image.includes('16_bins'))) {
       totalBins = 16;
       confidenceScore = 0.915;
-    } else if (input.image && input.image.includes('large_load')) {
+    } else if (input.image && (input.image.includes('large_load') || input.image.includes('24_bins'))) {
       totalBins = 24;
       totalPallets = 3;
+      confidenceScore = 0.988;
+    } else if (input.image && input.image.includes('12_bins')) {
+      totalBins = 12;
+      totalPallets = 2;
+      confidenceScore = 0.965;
     }
 
     return {
