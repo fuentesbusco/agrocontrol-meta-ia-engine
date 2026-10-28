@@ -152,7 +152,7 @@
               <span id="truck-tag" class="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Patente: JD-8941</span>
             </div>
             <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-100 h-44 shadow-inner">
-              <img id="truck-preview" src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80" alt="Camión con bins" class="w-full h-full object-cover">
+              <img id="truck-preview" src="/samples/camion_18_bins.jpg" alt="Camión con bins" class="w-full h-full object-cover">
               <div class="absolute bottom-2 left-2 right-2 bg-slate-900/75 backdrop-blur-sm text-white px-2.5 py-1.5 rounded text-[11px] flex justify-between items-center">
                 <span>Cámara Báscula Norte #02</span>
                 <span class="font-mono text-emerald-400">18 Bins / 2 Pallets</span>
@@ -170,7 +170,7 @@
               <span class="text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">Manuscrito</span>
             </div>
             <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-100 h-44 shadow-inner">
-              <img id="guide-preview" src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80" alt="Guía de campo" class="w-full h-full object-cover">
+              <img id="guide-preview" src="/samples/guia_despacho_18_bins.jpg" alt="Guía de campo" class="w-full h-full object-cover object-top">
               <div class="absolute bottom-2 left-2 right-2 bg-slate-900/75 backdrop-blur-sm text-white px-2.5 py-1.5 rounded text-[11px] flex justify-between items-center">
                 <span>Folio: GD-89412</span>
                 <span class="font-mono text-slate-300">7.200 Kg declarados</span>
@@ -328,26 +328,28 @@
     const API_BASE = window.location.origin;
 
     let currentTruck = {
-      image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80",
+      image: "/samples/camion_18_bins.jpg",
       type: "match"
     };
 
     let currentGuide = {
-      image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80"
+      image: "/samples/guia_despacho_18_bins.jpg"
     };
 
     function loadMatchedCase() {
-      currentTruck.image = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80";
+      currentTruck.image = "/samples/camion_18_bins.jpg";
       currentTruck.type = "match";
       document.getElementById('truck-preview').src = currentTruck.image;
+      document.getElementById('guide-preview').src = currentGuide.image;
       document.getElementById('truck-tag').innerText = "Patente: JD-8941 • 18 Bins";
       document.getElementById('truck-tag').className = "text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
     }
 
     function loadMismatchCase() {
-      currentTruck.image = "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?mismatch=true&auto=format&fit=crop&w=800&q=80";
+      currentTruck.image = "/samples/camion_mismatch_16_bins.jpg?mismatch=true";
       currentTruck.type = "mismatch";
       document.getElementById('truck-preview').src = currentTruck.image;
+      document.getElementById('guide-preview').src = currentGuide.image;
       document.getElementById('truck-tag').innerText = "Patente: JD-8941 • 16 Bins (Discrepancia)";
       document.getElementById('truck-tag').className = "text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
     }

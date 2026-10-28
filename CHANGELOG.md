@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-28
+
+### Added
+- Integrated live inference pipelines for all three external AI providers: Meta AI official platform (`https://api.meta.ai/v1/responses` with `muse-spark-1.3`), Modal serverless webhooks for SAM 3 and Muse Glimmer deployed on CPU, and Fireworks AI serverless (`muse-spark-open`).
+- Created realistic local sample dataset in `public/samples/` with authentic Chilean field dispatch guide (carbon-copy paper with official stamp, GD-89412) and real-world agricultural truck photography.
+- Added 1-click interactive scenario loaders ("Caso 1: 18 Bins Match" and "Caso 2: Discrepancia") directly in the dashboard UI.
+
 ## [1.2.0] - 2026-10-28
 
 ### Changed

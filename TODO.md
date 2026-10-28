@@ -23,12 +23,13 @@
 - [x] Implement unit testing suites for `ReceptionService`, `ChatService`, and `AppController`
 
 ## Phase 4: Frontend Demo UI (Tailwind CSS) (Completed)
-- [x] Build single static `index.html` with Tailwind CSS CDN in dark mode (`bg-midnight`, `text-platinum`)
-- [x] Screen A (Yard Operator): Photo upload for truck & field guide, instant visual & tabular reconciliation with presets
+- [x] Build single static `index.html` with Tailwind CSS in clean Light Mode B2B SaaS aesthetic (corporate agricultural design)
+- [x] Screen A (Yard Operator): Photo upload for truck & field guide, instant visual & tabular reconciliation with 1-click test cases
 - [x] Screen B (Farmer Assistant): WhatsApp-style conversational chat powered by Muse Spark with ground-truth ERP reasoning
-- [x] Configure NestJS static asset serving at `http://localhost:3000/`
+- [x] Configure NestJS static asset serving at `http://localhost:3000/` and local sample repository in `/samples/`
 
-## Phase 5: Testing, Real-World Data & Demo Recording (Next)
-- [ ] Test with Copefrut real-world sample images (trucks with wooden bins & dirty guides)
-- [ ] Verify seamless failover under simulated provider outage
-- [ ] Record 3-minute split-screen demo video highlighting the physical-to-digital transformation
+## Phase 5: Testing, Real-World Data & Demo Recording (Current)
+- [x] Integrate initial real-world truck photos from agricultural yard & authentic Chilean handwritten dispatch guide
+- [x] Verify live multi-provider failover (Meta AI Platform -> Modal Serverless -> Fireworks AI -> Local Mock)
+- [ ] Incorporate additional real photos from Curicó harvest (weekend)
+- [ ] Record 3-minute split-screen demo video highlighting the physical-to-digital transformation (next week)
