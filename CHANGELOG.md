@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-28
+
+### Changed
+- Redesigned the demo frontend interface completely into an enterprise B2B **Light Mode** design (`slate-50` background, clean white cards, subtle borders, and corporate forest green branding).
+- Removed all AI clichés (neon gradients, emoji logos, and flashy hackathon tags) from the top navigation bar.
+- Implemented clean operational SaaS headers including plant location ("Planta Curicó • Báscula Norte"), operator identity ("D. Fuentes • Jefe de Recepción"), and quick API documentation links.
+- Replaced Screen B with an authentic WhatsApp Web client interface (real teal header `#075E54`, verified badges, bubble color `#D9FDD3`, read receipt checkmarks `✓✓`, and natural agricultural coordinator tone).
+
 ## [1.1.0] - 2026-10-28
 
 ### Added
@@ -13,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented `MockDbService` modeling Chilean agricultural suppliers (e.g. Agrícola Los Nogales SpA, Copefrut partner data), historical deliveries, and liquidations.
 - Implemented `ReceptionController` (`POST /api/reception/process`) executing SAM 3 and Muse Glimmer concurrently using `Promise.all` and generating auto-reconciled intake payloads (`APPROVED` vs `FLAGGED_FOR_REVIEW`).
 - Implemented `ChatController` (`POST /api/chat`, `GET /api/chat/farmer-context/:farmerId`) answering farmer questions regarding batch approval and payments.
-- Created high-fidelity split-screen demo UI in `public/index.html` and `index.html` with Tailwind CSS CDN (`bg-midnight`, `text-platinum`), featuring Screen A (Operator Intake) and Screen B (Farmer WhatsApp Assistant).
 - Added comprehensive unit testing suites in `reception.service.spec.ts` and `chat.service.spec.ts` (100% test pass rate).
 
 ## [1.0.0-alpha.1] - 2026-10-28
@@ -26,4 +33,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented global `AllExceptionsFilter` with RFC-compliant error structures and correlation `requestId`.
 - Implemented `LoggingInterceptor` for real-time HTTP request auditing and latency calculation.
 - Integrated Swagger OpenAPI documentation exposed at `/api/docs`.
-- Implemented `GET /` and `GET /api/health` diagnostic endpoints.
