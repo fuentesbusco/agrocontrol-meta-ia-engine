@@ -1,14 +1,19 @@
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Serve static demo assets from public directory
+  app.useStaticAssets(join(__dirname, '..', 'public'));
 
   // Security headers with Helmet
   app.use(
@@ -60,6 +65,7 @@ async function bootstrap() {
 
   await app.listen(port);
   logger.log(`AgroControl Engine running on port: ${port}`);
+  logger.log(`Frontend Demo Dashboard available at: http://localhost:${port}/`);
   logger.log(`Swagger documentation available at: http://localhost:${port}/api/docs`);
 }
 

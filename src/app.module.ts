@@ -8,6 +8,10 @@ import { validate } from './config/env.validation';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { DatabaseModule } from './database/database.module';
+import { AiModule } from './ai/ai.module';
+import { ReceptionModule } from './reception/reception.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
       timeout: 15000,
       maxRedirects: 3,
     }),
+    DatabaseModule,
+    AiModule,
+    ReceptionModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
