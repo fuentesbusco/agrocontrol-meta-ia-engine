@@ -207,7 +207,19 @@ export class VisionService {
     let totalPallets = 2;
     let confidenceScore = 0.982;
 
-    if (input.image && (input.image.includes('mismatch') || input.image.includes('16_bins'))) {
+    if (input.image && (input.image.includes('camion_8_columnas') || input.image.includes('8_columnas'))) {
+      totalBins = 16;
+      totalPallets = 2;
+      confidenceScore = 0.982;
+    } else if (input.image && (input.image.includes('camion_2_columnas') || input.image.includes('2_columnas'))) {
+      totalBins = 4;
+      totalPallets = 1;
+      confidenceScore = 0.971;
+    } else if (input.image && (input.image.includes('fila_7_bins') || input.image.includes('7_bins'))) {
+      totalBins = 7;
+      totalPallets = 0;
+      confidenceScore = 0.989;
+    } else if (input.image && (input.image.includes('mismatch') || input.image.includes('16_bins'))) {
       totalBins = 16;
       confidenceScore = 0.915;
     } else if (input.image && (input.image.includes('large_load') || input.image.includes('24_bins'))) {

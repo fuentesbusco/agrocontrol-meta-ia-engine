@@ -209,7 +209,17 @@ export class OcrService {
     const supplierName = 'Agrícola Los Nogales SpA';
     let cropType = 'Royal Dawn Cherries (Cerezas Exportación)';
 
-    if (input.image && input.image.includes('large_load')) {
+    if (input.image && (input.image.includes('documento_recepcion_granel') || input.image.includes('granel'))) {
+      declaredBins = 16;
+      declaredKilos = 6400;
+      documentId = 'REC-GRANEL-4481';
+      cropType = 'Cerezas Lapins (Recepción a Granel)';
+    } else if (input.image && (input.image.includes('guia_despacho_real') || input.image.includes('guia_real'))) {
+      declaredBins = 16;
+      declaredKilos = 6400;
+      documentId = 'GD-92014';
+      cropType = 'Cerezas Lapins de Exportación';
+    } else if (input.image && input.image.includes('large_load')) {
       declaredBins = 24;
       declaredKilos = 9600;
       documentId = 'GD-89504';

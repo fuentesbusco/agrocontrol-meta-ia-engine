@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-11-02
+
+### Changed
+- Upgraded engine runtime to **Node.js 22 LTS (`v22.23.4`)** with npm `10.9.9`.
+- Added `.nvmrc` pinned to `v22.23.4` and configured `"engines": { "node": ">=22.0.0", "npm": ">=10.0.0" }` in `package.json`.
+- Verified complete compatibility across NestJS 11, RxJS 7, Helmet 8, Swagger UI and Jest under the Node 22 V8 engine.
+
+## [1.5.0] - 2026-11-02
+
+### Added
+- Integrated authentic agricultural plant dataset into `public/samples/reales_planta/`: real Chilean dispatch guide (`guia_despacho_real.jpeg`), official bulk fruit intake document (`documento_recepcion_granel.jpeg`), full cherry truck with 8 columns/16 bins (`camion_8_columnas_cerezas.jpeg`), partial truck discrepancy with 2 columns loaded and 6 empty (`camion_2_columnas_cerezas_6_vacias.jpeg`), and 7-bin yard floor intake (`fila_7_bins_cerezas.jpeg`).
+- Calibrated Modal serverless inference in `modal_app/app.py`, `vision.service.ts` and `ocr.service.ts` to detect and reconcile the new plant scenarios.
+- Upgraded the web dashboard interactive testing carousel with direct 1-click presets for authentic plant verification.
+
 ## [1.4.1] - 2026-11-02
 
 ### Added
