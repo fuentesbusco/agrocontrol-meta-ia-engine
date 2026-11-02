@@ -23,6 +23,11 @@ export interface FireworksProviderConfig {
   agentModel: string;
 }
 
+export interface ImageOptimizationConfig {
+  maxWidthPx: number;
+  jpegQuality: number;
+}
+
 export interface AiResilienceConfig {
   timeoutMs: number;
   maxRetries: number;
@@ -35,6 +40,12 @@ export interface AppConfiguration {
   ai: {
     primaryProvider: AiProvider;
     fallbackProviders: AiProvider[];
+    routing: {
+      visionProvider: AiProvider;
+      ocrProvider: AiProvider;
+      agentProvider: AiProvider;
+    };
+    imageOptimization: ImageOptimizationConfig;
     resilience: AiResilienceConfig;
     meta: ProviderEndpointConfig;
     modal: ModalProviderConfig;
@@ -43,7 +54,7 @@ export interface AppConfiguration {
 }
 
 export default (): AppConfiguration => {
-  const fallbackStr = process.env.AI_PROVIDER_FALLBACKS || 'modal,fireworks,mock';
+  const fallbackStr = process.env.AI_PROVIDER_FALLBACKS || 'fireworks,mock';
   const fallbackProviders = fallbackStr
     .split(',')
     .map((item) => item.trim() as AiProvider)
@@ -53,19 +64,28 @@ export default (): AppConfiguration => {
     port: parseInt(process.env.PORT ?? '3000', 10),
     nodeEnv: process.env.NODE_ENV || 'development',
     ai: {
-      primaryProvider: (process.env.AI_PROVIDER_PRIMARY as AiProvider) || AiProvider.META,
+      primaryProvider: (process.env.AI_PROVIDER_PRIMARY as AiProvider) || AiProvider.MODAL,
       fallbackProviders,
+      routing: {
+        visionProvider: (process.env.AI_VISION_PROVIDER as AiProvider) || AiProvider.MODAL,
+        ocrProvider: (process.env.AI_OCR_PROVIDER as AiProvider) || AiProvider.MODAL,
+        agentProvider: (process.env.AI_AGENT_PROVIDER as AiProvider) || AiProvider.FIREWORKS,
+      },
+      imageOptimization: {
+        maxWidthPx: parseInt(process.env.IMAGE_MAX_WIDTH_PX ?? '1280', 10),
+        jpegQuality: parseInt(process.env.IMAGE_JPEG_QUALITY ?? '80', 10),
+      },
       resilience: {
-        timeoutMs: parseInt(process.env.AI_REQUEST_TIMEOUT_MS ?? '15000', 10),
+        timeoutMs: parseInt(process.env.AI_REQUEST_TIMEOUT_MS ?? '20000', 10),
         maxRetries: parseInt(process.env.AI_MAX_RETRIES ?? '2', 10),
         retryDelayMs: parseInt(process.env.AI_RETRY_DELAY_MS ?? '1000', 10),
       },
       meta: {
         apiKey: process.env.META_API_KEY || '',
         baseUrl: process.env.META_API_URL || 'https://api.meta.ai/v1',
-        visionEndpoint: process.env.META_VISION_ENDPOINT || '/responses',
-        ocrEndpoint: process.env.META_OCR_ENDPOINT || '/responses',
-        agentEndpoint: process.env.META_AGENT_ENDPOINT || '/responses',
+        visionEndpoint: process.env.META_VISION_ENDPOINT || '/sam3/predict',
+        ocrEndpoint: process.env.META_OCR_ENDPOINT || '/glimmer/extract',
+        agentEndpoint: process.env.META_AGENT_ENDPOINT || '/spark/chat',
       },
       modal: {
         apiKey: process.env.MODAL_API_KEY || '',
@@ -81,18 +101,10 @@ export default (): AppConfiguration => {
       },
       fireworks: {
         apiKey: process.env.FIREWORKS_API_KEY || '',
-        baseUrl:
-          process.env.FIREWORKS_BASE_URL ||
-          'https://api.fireworks.ai/inference/v1',
-        visionModel:
-          process.env.FIREWORKS_VISION_MODEL ||
-          'accounts/fireworks/models/sam-3-vision',
-        ocrModel:
-          process.env.FIREWORKS_OCR_MODEL ||
-          'accounts/fireworks/models/muse-glimmer-v1',
-        agentModel:
-          process.env.FIREWORKS_AGENT_MODEL ||
-          'accounts/fireworks/models/muse-spark-open',
+        baseUrl: process.env.FIREWORKS_BASE_URL || 'https://api.fireworks.ai/inference/v1',
+        visionModel: process.env.FIREWORKS_VISION_MODEL || 'accounts/fireworks/models/sam-3-vision',
+        ocrModel: process.env.FIREWORKS_OCR_MODEL || 'accounts/fireworks/models/muse-glimmer-v1',
+        agentModel: process.env.FIREWORKS_AGENT_MODEL || 'accounts/fireworks/models/muse-spark-open',
       },
     },
   };

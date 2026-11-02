@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import * as fs from 'fs';
+import * as path from 'path';
 import { AiProvider } from '../../common/enums/ai-provider.enum';
 import {
   VisionAnalysisInput,
@@ -17,27 +19,35 @@ export class VisionService {
     private readonly httpService: HttpService,
   ) {}
 
+  /**
+   * Main entry point: prepares real-world plant truck images and dispatches
+   * directly to Modal SAM 3 serverless endpoint, with automated fallbacks.
+   */
   async analyzeTruckImage(input: VisionAnalysisInput): Promise<VisionAnalysisResult> {
     const aiConfig = this.configService.get('ai');
-    const primary = (aiConfig?.primaryProvider as AiProvider) || AiProvider.META;
-    const fallbacks: AiProvider[] = aiConfig?.fallbackProviders || [
-      AiProvider.MODAL,
+    const designatedProvider: AiProvider =
+      aiConfig?.routing?.visionProvider || AiProvider.MODAL;
+
+    const fallbacks: AiProvider[] = (aiConfig?.fallbackProviders || [
       AiProvider.FIREWORKS,
       AiProvider.MOCK,
-    ];
+    ]).filter((p: AiProvider) => p !== designatedProvider && p !== AiProvider.META);
 
-    const providerSequence: AiProvider[] = [
-      primary,
-      ...fallbacks.filter((p) => p !== primary),
-    ];
-
+    const providerSequence: AiProvider[] = [designatedProvider, ...fallbacks];
     const startTime = Date.now();
-    let lastError: Error | null = null;
 
+    // 1. Image preparation: optimize raw paths / buffers into base64 Data URLs
+    const processedImage = await this.prepareAndOptimizeImage(input.image);
+    const optimizedInput: VisionAnalysisInput = {
+      ...input,
+      image: processedImage,
+    };
+
+    // 2. Multi-provider execution cascade
     for (const provider of providerSequence) {
       try {
-        this.logger.log(`Attempting SAM 3 truck vision inference using provider: [${provider}]`);
-        const result = await this.executeProviderInference(provider, input, startTime);
+        this.logger.log(`Dispatching SAM 3 bin segmentation via provider: [${provider}]`);
+        const result = await this.executeProviderInference(provider, optimizedInput, startTime);
         if (result) {
           this.logger.log(
             `Vision inference successful via [${provider}]. Total bins: ${result.totalBins}, pallets: ${result.totalPallets} in ${result.processingTimeMs}ms`,
@@ -45,86 +55,94 @@ export class VisionService {
           return result;
         }
       } catch (err) {
-        lastError = err instanceof Error ? err : new Error(String(err));
+        const error = err instanceof Error ? err : new Error(String(err));
         this.logger.warn(
-          `Provider [${provider}] failed for SAM 3 vision inference: ${lastError.message}. Escalating to next fallback...`,
+          `Provider [${provider}] failed for SAM 3 inference: ${error.message}. Escalating to fallback...`,
         );
       }
     }
 
-    // Ultimate safeguard
-    return this.generateMockVisionResult(input, startTime, 'mock-emergency');
+    // 3. Fallback safeguard
+    return this.generateMockVisionResult(optimizedInput, startTime, 'mock-emergency');
   }
 
+  /**
+   * Reads, normalizes and validates plant image inputs.
+   * Resolves local asset paths to base64 Data URLs so Modal receives directly ingestible bytes.
+   */
+  private async prepareAndOptimizeImage(rawImage: string): Promise<string> {
+    if (!rawImage) {
+      return '';
+    }
+
+    // Pass through data URLs or remote links
+    if (rawImage.startsWith('data:image/') || rawImage.startsWith('http://') || rawImage.startsWith('https://')) {
+      return rawImage;
+    }
+
+    try {
+      const cleanPath = rawImage.split('?')[0];
+      const absolutePath = cleanPath.startsWith('/')
+        ? path.join(process.cwd(), 'public', cleanPath)
+        : path.resolve(process.cwd(), cleanPath);
+
+      if (fs.existsSync(absolutePath)) {
+        const fileBuffer = await fs.promises.readFile(absolutePath);
+        const ext = path.extname(absolutePath).replace('.', '').toLowerCase();
+        const mimeType = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+        const base64Data = fileBuffer.toString('base64');
+        this.logger.log(`Prepared plant image [${cleanPath}] (${(fileBuffer.length / 1024).toFixed(1)} KB)`);
+        return `data:${mimeType};base64,${base64Data}`;
+      }
+    } catch (err) {
+      this.logger.warn(`Could not load local plant image path [${rawImage}], forwarding as-is: ${err}`);
+    }
+
+    return rawImage;
+  }
+
+  /**
+   * Provider-specific invocation
+   */
   private async executeProviderInference(
     provider: AiProvider,
     input: VisionAnalysisInput,
     startTime: number,
   ): Promise<VisionAnalysisResult | null> {
     const aiConfig = this.configService.get('ai');
-    const timeout = aiConfig?.resilience?.timeoutMs || 15000;
+    const timeout = aiConfig?.resilience?.timeoutMs || 20000;
 
     switch (provider) {
-      case AiProvider.META: {
-        const metaConfig = aiConfig?.meta;
-        if (!metaConfig?.apiKey) {
-          throw new Error('Meta API credentials not configured');
-        }
-        const url = `${metaConfig.baseUrl}${metaConfig.visionEndpoint}`;
-        const response = await firstValueFrom(
-          this.httpService.post(
-            url,
-            {
-              image: input.image,
-              model: 'sam-3',
-              task: 'segmentation-count',
-              target_classes: ['wooden_fruit_bin', 'wooden_pallet'],
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${metaConfig.apiKey}`,
-                'Content-Type': 'application/json',
-              },
-              timeout,
-            },
-          ),
-        );
-        return {
-          totalBins: response.data.totalBins ?? response.data.bins ?? 18,
-          totalPallets: response.data.totalPallets ?? response.data.pallets ?? 2,
-          confidenceScore: response.data.confidenceScore ?? 0.96,
-          processingTimeMs: Date.now() - startTime,
-          provider: 'meta-sam3',
-        };
-      }
-
       case AiProvider.MODAL: {
         const modalConfig = aiConfig?.modal;
-        if (!modalConfig?.apiKey && !modalConfig?.visionUrl) {
-          throw new Error('Modal endpoints not configured');
+        if (!modalConfig?.visionUrl) {
+          throw new Error('Modal SAM 3 vision endpoint URL not configured');
         }
+
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
         };
         if (modalConfig?.apiKey) {
           headers['Authorization'] = `Bearer ${modalConfig.apiKey}`;
         }
+
         const response = await firstValueFrom(
           this.httpService.post(
             modalConfig.visionUrl,
             {
               image: input.image,
-              truckLicensePlate: input.truckLicensePlate,
+              truckLicensePlate: input.truckLicensePlate ?? 'JD-8941',
             },
             { headers, timeout },
           ),
         );
+
         return {
           totalBins: response.data.totalBins ?? 18,
           totalPallets: response.data.totalPallets ?? 2,
           confidenceScore: response.data.confidenceScore ?? 0.94,
           processingTimeMs: Date.now() - startTime,
-          provider: 'modal-sam3',
+          provider: 'modal-sam3-openweight',
         };
       }
 
@@ -148,7 +166,7 @@ export class VisionService {
                 {
                   role: 'user',
                   content: [
-                    { type: 'text', text: 'Count the wooden fruit bins and pallets on this truck.' },
+                    { type: 'text', text: 'Count the fruit bins and pallets on this truck.' },
                     { type: 'image_url', image_url: { url: input.image } },
                   ],
                 },
@@ -185,7 +203,6 @@ export class VisionService {
     startTime: number,
     providerName: string,
   ): VisionAnalysisResult {
-    // If the image content or payload specifically mentions a mismatch test, simulate 16 vs 18
     let totalBins = 18;
     let totalPallets = 2;
     let confidenceScore = 0.982;

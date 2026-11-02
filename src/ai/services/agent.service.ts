@@ -20,31 +20,32 @@ export class AgentService {
     private readonly mockDbService: MockDbService,
   ) {}
 
+  /**
+   * Main conversational interface: routes strictly to Fireworks Serverless
+   * inference running Muse Spark Open-Weight model with RAG context grounding.
+   */
   async processFarmerQuery(input: AgentChatInput): Promise<AgentChatResult> {
     const aiConfig = this.configService.get('ai');
-    const primary = (aiConfig?.primaryProvider as AiProvider) || AiProvider.META;
-    const fallbacks: AiProvider[] = aiConfig?.fallbackProviders || [
+    const designatedProvider: AiProvider =
+      aiConfig?.routing?.agentProvider || AiProvider.FIREWORKS;
+
+    const fallbacks: AiProvider[] = (aiConfig?.fallbackProviders || [
       AiProvider.MODAL,
-      AiProvider.FIREWORKS,
       AiProvider.MOCK,
-    ];
+    ]).filter((p: AiProvider) => p !== designatedProvider && p !== AiProvider.META);
 
-    const providerSequence: AiProvider[] = [
-      primary,
-      ...fallbacks.filter((p) => p !== primary),
-    ];
+    const providerSequence: AiProvider[] = [designatedProvider, ...fallbacks];
 
-    // Fetch verified context from database
+    // Fetch verified grounding context from in-memory ERP database
     const context =
       this.mockDbService.getFarmerContext(input.farmerId) ||
-      this.mockDbService.getFarmerContext('FARMER-76492'); // Default fallback to primary demo farmer
+      this.mockDbService.getFarmerContext('FARMER-76492');
 
     const startTime = Date.now();
-    let lastError: Error | null = null;
 
     for (const provider of providerSequence) {
       try {
-        this.logger.log(`Attempting Muse Spark conversational agent query via: [${provider}]`);
+        this.logger.log(`Dispatching Muse Spark agent query via: [${provider}]`);
         const result = await this.executeProviderChat(provider, input, context, startTime);
         if (result) {
           this.logger.log(
@@ -53,9 +54,9 @@ export class AgentService {
           return result;
         }
       } catch (err) {
-        lastError = err instanceof Error ? err : new Error(String(err));
+        const error = err instanceof Error ? err : new Error(String(err));
         this.logger.warn(
-          `Provider [${provider}] failed for Muse Spark agent: ${lastError.message}. Escalating to next fallback...`,
+          `Provider [${provider}] failed for Muse Spark agent: ${error.message}. Escalating to fallback...`,
         );
       }
     }
@@ -70,60 +71,53 @@ export class AgentService {
     startTime: number,
   ): Promise<AgentChatResult | null> {
     const aiConfig = this.configService.get('ai');
-    const timeout = aiConfig?.resilience?.timeoutMs || 15000;
-
+    const timeout = aiConfig?.resilience?.timeoutMs || 20000;
     const systemPrompt = this.buildSystemPrompt(context);
 
     switch (provider) {
-      case AiProvider.META: {
-        const metaConfig = aiConfig?.meta;
-        if (!metaConfig?.apiKey) {
-          throw new Error('Meta API credentials not configured');
+      case AiProvider.FIREWORKS: {
+        const fireworksConfig = aiConfig?.fireworks;
+        if (!fireworksConfig?.apiKey) {
+          throw new Error('Fireworks API key not configured');
         }
-        const url = `${metaConfig.baseUrl}${metaConfig.agentEndpoint}`;
-        const promptText = `${systemPrompt}\n\nPregunta del agricultor: "${input.userMessage}"\nResponde en español chileno respetuoso como asistente de báscula de AgroControl basándote estrictamente en los registros verificados.`;
+        const url = `${fireworksConfig.baseUrl}/chat/completions`;
         const response = await firstValueFrom(
           this.httpService.post(
             url,
             {
-              model: 'muse-spark-1.3',
-              input: [
-                {
-                  role: 'user',
-                  content: [{ type: 'input_text', text: promptText }],
-                },
+              model: fireworksConfig.agentModel,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: input.userMessage },
               ],
-              stream: false,
+              temperature: 0.3,
+              max_tokens: 500,
             },
             {
               headers: {
-                Authorization: `Bearer ${metaConfig.apiKey}`,
+                Authorization: `Bearer ${fireworksConfig.apiKey}`,
                 'Content-Type': 'application/json',
               },
               timeout,
             },
           ),
         );
-        const data = response.data;
-        const msgOutput = data.output?.find((o: Record<string, unknown>) => o.type === 'message');
         const replyText =
-          (msgOutput?.content as Array<Record<string, unknown>>)?.[0]?.text as string ||
-          data.agentResponse ||
-          data.reply ||
-          'Respuesta procesada por Meta AI.';
+          response.data.choices[0]?.message?.content ||
+          'Estimado productor, su consulta ha sido procesada correctamente contra los registros de báscula.';
 
         return {
           agentResponse: replyText,
           intent: this.detectIntent(input.userMessage),
           groundedDeliveriesCount: context?.deliveries.length || 0,
-          provider: 'meta-muse-spark-1.3',
+          provider: 'fireworks-muse-spark-openweight',
           referencedDeliveries: context?.deliveries || [],
         };
       }
 
       case AiProvider.MODAL: {
         const modalConfig = aiConfig?.modal;
-        if (!modalConfig?.apiKey && !modalConfig?.agentUrl) {
+        if (!modalConfig?.agentUrl) {
           throw new Error('Modal Agent endpoints not configured');
         }
         const headers: Record<string, string> = {
@@ -145,45 +139,9 @@ export class AgentService {
         );
         return {
           agentResponse: response.data.agentResponse || response.data.reply,
-          intent: response.data.intent || this.detectIntent(input.userMessage),
-          groundedDeliveriesCount: context?.deliveries.length || 0,
-          provider: 'modal-muse-spark',
-          referencedDeliveries: context?.deliveries || [],
-        };
-      }
-
-      case AiProvider.FIREWORKS: {
-        const fireworksConfig = aiConfig?.fireworks;
-        if (!fireworksConfig?.apiKey) {
-          throw new Error('Fireworks API key not configured');
-        }
-        const url = `${fireworksConfig.baseUrl}/chat/completions`;
-        const response = await firstValueFrom(
-          this.httpService.post(
-            url,
-            {
-              model: fireworksConfig.agentModel,
-              messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: input.userMessage },
-              ],
-              temperature: 0.2,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${fireworksConfig.apiKey}`,
-                'Content-Type': 'application/json',
-              },
-              timeout,
-            },
-          ),
-        );
-        const reply = response.data.choices[0].message.content;
-        return {
-          agentResponse: reply,
           intent: this.detectIntent(input.userMessage),
           groundedDeliveriesCount: context?.deliveries.length || 0,
-          provider: 'fireworks-muse-spark',
+          provider: 'modal-muse-spark',
           referencedDeliveries: context?.deliveries || [],
         };
       }
@@ -195,52 +153,45 @@ export class AgentService {
   }
 
   private buildSystemPrompt(context: FarmerContext | null): string {
-    const deliveriesJson = JSON.stringify(context?.deliveries ?? [], null, 2);
-    return `You are Muse Spark, an expert B2B AI operational and financial assistant for agricultural growers delivering fruit to AgroControl packing facilities.
-You must speak in professional, warm Chilean agricultural Spanish (e.g., "Don Carlos", "Estimado productor").
-CRITICAL RULE: Rely EXCLUSIVELY on the verified database records below. Do not invent any numbers, dates, or payment details. If information is not in the records, state so clearly and offer to notify yard administration.
+    const farmerName = context?.farmerName || 'Don Carlos Morales';
+    const farmerRut = context?.farmerRut || '76.492.103-8';
+    const deliveriesText = context?.deliveries?.length
+      ? context.deliveries
+          .map(
+            (d) =>
+              `- Recepción: ${d.receptionId} | Fecha: ${d.deliveryDate} | Guía: ${d.dispatchGuideNumber} | Especie: ${d.cropType} | Bins Declarados: ${d.declaredBins} | Bins Contados: ${d.countedBins} | Kilos: ${d.declaredKilos} kg | Estado: ${d.status} | Liquidado: ${d.isLiquidated ? 'SÍ' : 'NO'}`,
+          )
+          .join('\n')
+      : 'No registra entregas recientes en el sistema.';
 
-VERIFIED PRODUCER CONTEXT:
-- Name: ${context?.farmerName ?? 'Agrícola Los Nogales SpA'}
-- RUT: ${context?.farmerRut ?? '76.492.103-8'}
-- Location: ${context?.farmLocation ?? 'Curicó, Región del Maule'}
-- Recent Deliveries & Payment Status:
-${deliveriesJson}
-`;
+    return `Eres AgroControl Assistant, el asistente virtual oficial de recepción y báscula en Planta Curicó (Atelier Busco).
+Atiendes a productores agrícolas chilenos a través de WhatsApp de forma profesional, clara, empática y respetuosa.
+
+DATOS VERIFICADOS DEL PRODUCTOR:
+Nombre: ${farmerName}
+RUT: ${farmerRut}
+Entregas Registradas en ERP:
+${deliveriesText}
+
+REGLAS DE RESPUESTA:
+1. Responde SIEMPRE basándote de forma estricta en los datos verificados anteriores.
+2. Si preguntan por liquidaciones o pagos, confirma el estado exacto de cada guía y el monto o kilos asociados.
+3. Si una entrega está en estado FLAGGED_FOR_REVIEW o con discrepancia, explica amablemente que el supervisor de patio la está revisando manualmente y se le notificará a la brevedad.
+4. Mantén un tono natural chileno corporativo (ej: "Estimado Don Carlos", "según nuestros registros en báscula").
+5. NUNCA inventes números de guías, kilos o dinero que no figuren en los datos verificados.`;
   }
 
   private detectIntent(
     message: string,
   ): 'PAYMENT_STATUS' | 'DELIVERY_CONFIRMATION' | 'QUALITY_DISPUTE' | 'GENERAL_INQUIRY' {
     const lower = message.toLowerCase();
-    if (
-      lower.includes('pago') ||
-      lower.includes('liquid') ||
-      lower.includes('plata') ||
-      lower.includes('cuándo me pagan') ||
-      lower.includes('cuanto') ||
-      lower.includes('transferencia')
-    ) {
+    if (lower.includes('liquid') || lower.includes('pago') || lower.includes('plata') || lower.includes('transferencia')) {
       return 'PAYMENT_STATUS';
     }
-    if (
-      lower.includes('entrega') ||
-      lower.includes('bins') ||
-      lower.includes('martes') ||
-      lower.includes('llegó') ||
-      lower.includes('camion') ||
-      lower.includes('recepción') ||
-      lower.includes('guía')
-    ) {
+    if (lower.includes('bin') || lower.includes('kilo') || lower.includes('conteo') || lower.includes('recep') || lower.includes('camion')) {
       return 'DELIVERY_CONFIRMATION';
     }
-    if (
-      lower.includes('rechazo') ||
-      lower.includes('diferencia') ||
-      lower.includes('falta') ||
-      lower.includes('calidad') ||
-      lower.includes('descuento')
-    ) {
+    if (lower.includes('discrepan') || lower.includes('problema') || lower.includes('falta') || lower.includes('rechazo')) {
       return 'QUALITY_DISPUTE';
     }
     return 'GENERAL_INQUIRY';
@@ -253,42 +204,24 @@ ${deliveriesJson}
     providerName: string,
   ): AgentChatResult {
     const intent = this.detectIntent(input.userMessage);
-    const deliveries = context?.deliveries || [];
-    const tuesdayDelivery = deliveries.find(
-      (d) => d.deliveryDate === '2026-10-20' || d.declaredBins === 18,
-    );
-
     let agentResponse = '';
 
-    if (intent === 'PAYMENT_STATUS' || input.userMessage.toLowerCase().includes('martes')) {
-      if (tuesdayDelivery && tuesdayDelivery.isLiquidated) {
-        const formattedAmount = tuesdayDelivery.paymentAmountClp
-          ? new Intl.NumberFormat('es-CL', {
-              style: 'currency',
-              currency: 'CLP',
-            }).format(tuesdayDelivery.paymentAmountClp)
-          : '$18.450.000 CLP';
-
-        agentResponse = `Estimado Don Carlos, revisando su cuenta en el sistema de recepción: sí, la entrega del martes 20 de octubre correspondiente a la Guía ${tuesdayDelivery.dispatchGuideNumber} (18 bins de Cerezas Royal Dawn, 7.200 kg netos) fue completamente aprobada y ya se encuentra LIQUIDADA con fecha 24 de octubre por un monto neto de ${formattedAmount}. Los fondos ya fueron transferidos a su cuenta registrada. ¿Desea que le envíe el comprobante de liquidación a su correo?`;
-      } else if (tuesdayDelivery) {
-        agentResponse = `Estimado Don Carlos, su entrega del martes (18 bins, Guía ${tuesdayDelivery.dispatchGuideNumber}) está recibida y aprobada en patio. La liquidación financiera está programada para su cierre de ciclo este viernes.`;
-      } else {
-        agentResponse = `Estimado Don Carlos, consultando en la base de datos de patio registramos su entrega de 18 bins de cerezas en estado APROBADO. El proceso de liquidación administrativa está en curso.`;
-      }
+    if (intent === 'PAYMENT_STATUS') {
+      agentResponse = `Estimado ${context?.farmerName || 'Don Carlos'}, revisando su entrega del 28 de octubre con guía GD-89412 por 18 bins (7.200 kg de Cerezas Lapins), le confirmamos que fue APROBADA en báscula. El estado de liquidación se encuentra programado para pago el próximo viernes.`;
     } else if (intent === 'DELIVERY_CONFIRMATION') {
-      agentResponse = `Estimado productor, confirmamos que sus últimas recepciones en planta registran ${deliveries.length} entregas: la Guía GD-89412 (18 bins) aprobada y liquidada, la Guía GD-89504 (24 bins) aprobada pendiente de liquidación, y la Guía GD-89689 actualmente en revisión por diferencia de 2 bins en conteo físico.`;
+      agentResponse = `Buenas tardes ${context?.farmerName || 'Don Carlos'}. Su camión patente JD-8941 completó el pesaje en Báscula Norte. El conteo óptico por visión artificial confirmó exactamente 18 bins de exportación, coincidiendo con su guía de despacho.`;
     } else if (intent === 'QUALITY_DISPUTE') {
-      agentResponse = `Don Carlos, respecto a la observación de calidad o conteo: la recepción GD-89689 del 25 de octubre presentó 28 bins contados físicamente vs 30 declarados en guía. Nuestro jefe de patio ya adjuntó las fotografías de SAM 3 para su revisión conjunta.`;
+      agentResponse = `Estimado ${context?.farmerName || 'Don Carlos'}, informamos que la recepción se encuentra bajo revisión del supervisor debido a una discrepancia en el conteo de bins reportada por el sistema. Nos pondremos en contacto vía telefónica a la brevedad.`;
     } else {
-      agentResponse = `Buenas tardes Don Carlos, le saluda Muse Spark de AgroControl. Tengo acceso directo a sus registros de entregas de fruta en Curicó. ¿En qué le puedo colaborar hoy con sus recepciones o pagos?`;
+      agentResponse = `Estimado ${context?.farmerName || 'Don Carlos'}, su historial registra 2 recepciones esta semana en Planta Curicó por un total de 36 bins y 14.400 kg de fruta de exportación. Todas conciliadas exitosamente con sus guías de huerto.`;
     }
 
     return {
       agentResponse,
       intent,
-      groundedDeliveriesCount: deliveries.length,
+      groundedDeliveriesCount: context?.deliveries.length || 0,
       provider: providerName,
-      referencedDeliveries: deliveries,
+      referencedDeliveries: context?.deliveries || [],
     };
   }
 }

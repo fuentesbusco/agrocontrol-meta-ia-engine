@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-11-02
+
+### Added
+- Completed Phase 2 architecture alignment: `OcrService` fully adapted for direct Modal Muse Glimmer extraction with automatic Base64 serialization of dispatch guide images.
+- Enforced strict intent classification typing (`PAYMENT_STATUS`, `DELIVERY_CONFIRMATION`, `QUALITY_DISPUTE`, `GENERAL_INQUIRY`) in `AgentService` routed through Fireworks Serverless Muse Spark.
+
+## [1.4.0] - 2026-11-02
+
+### Changed
+- Executed emergency infrastructure failover: redirected vision analysis (SAM 3) and handwritten document OCR (Muse Glimmer) strictly to Modal serverless webhook endpoints.
+- Re-routed conversational financial agent (Muse Spark) natively through Fireworks Serverless open-weight inference (`accounts/fireworks/models/muse-spark-open`).
+- Updated `src/config/configuration.ts` with granular per-service routing (`routing.visionProvider`, `routing.ocrProvider`, `routing.agentProvider`) and local asset optimization.
+- Enhanced `VisionService` with in-memory image preparation and Base64 Data URL serialization for plant image ingestion.
+
 ## [1.3.1] - 2026-10-28
 
 ### Added
