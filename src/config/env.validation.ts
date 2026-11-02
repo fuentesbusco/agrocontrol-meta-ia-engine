@@ -97,7 +97,7 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
-  FIREWORKS_AGENT_MODEL: string = 'accounts/fireworks/models/muse-spark-open';
+  FIREWORKS_AGENT_MODEL: string = 'accounts/fireworks/models/llama-v3p1-8b-instruct';
 }
 
 export function validate(config: Record<string, unknown>) {

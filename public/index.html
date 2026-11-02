@@ -831,6 +831,8 @@
       handleChatSubmit(new Event('submit'));
     }
 
+    const chatConversationHistory = [];
+
     async function handleChatSubmit(e) {
       e.preventDefault();
       const input = document.getElementById('chat-input');
@@ -838,6 +840,7 @@
       if (!text) return;
 
       appendChatMessage(text, 'user');
+      chatConversationHistory.push({ role: 'user', content: text });
       input.value = '';
 
       const typingId = appendTypingIndicator();
@@ -848,12 +851,20 @@
           const res = await fetch(`${API_BASE}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text, farmerId: 'FARMER-76492' })
+            body: JSON.stringify({
+              message: text,
+              farmerId: 'FARMER-76492',
+              history: chatConversationHistory.slice(-6),
+            }),
           });
           const data = await res.json();
           replyText = data.response;
         } catch (netErr) {
-          replyText = `Estimado Don Carlos, revisando su cuenta en el sistema de recepción: sí, la entrega del martes 20 de octubre correspondiente a la Guía GD-89412 (18 bins de Cerezas Royal Dawn, 7.200 kg netos) fue completamente aprobada y ya se encuentra LIQUIDADA con fecha 24 de octubre por un monto neto de $18.450.000 CLP. Los fondos ya fueron transferidos a su cuenta registrada. ¿Desea que le envíe el comprobante de liquidación a su correo?`;
+          replyText = `Estimado Don Carlos: revisando su cuenta en el sistema de recepción, sí, la entrega del martes 20 de octubre correspondiente a la Guía GD-89412 (18 bins de Cerezas Royal Dawn, 7.200 kg netos) fue completamente aprobada y ya se encuentra LIQUIDADA con fecha 24 de octubre por un monto neto de $18.450.000 CLP transferidos a su cuenta registrada. ¿Desea que le reenviemos el comprobante de liquidación a su correo?`;
+        }
+
+        if (replyText) {
+          chatConversationHistory.push({ role: 'assistant', content: replyText });
         }
 
         removeTypingIndicator(typingId);

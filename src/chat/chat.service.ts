@@ -21,6 +21,7 @@ export class ChatService {
     const result = await this.agentService.processFarmerQuery({
       farmerId,
       userMessage: dto.message,
+      history: dto.history,
     });
 
     return {

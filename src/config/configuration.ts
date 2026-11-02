@@ -104,7 +104,9 @@ export default (): AppConfiguration => {
         baseUrl: process.env.FIREWORKS_BASE_URL || 'https://api.fireworks.ai/inference/v1',
         visionModel: process.env.FIREWORKS_VISION_MODEL || 'accounts/fireworks/models/sam-3-vision',
         ocrModel: process.env.FIREWORKS_OCR_MODEL || 'accounts/fireworks/models/muse-glimmer-v1',
-        agentModel: process.env.FIREWORKS_AGENT_MODEL || 'accounts/fireworks/models/muse-spark-open',
+        agentModel:
+          process.env.FIREWORKS_AGENT_MODEL ||
+          'accounts/fireworks/models/llama-v3p1-8b-instruct',
       },
     },
   };

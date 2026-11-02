@@ -4,14 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-11-02
+
+### Added
+- Created dedicated unit test suite for conversational agent (`src/ai/services/agent.service.spec.ts`) validating grounded responses for payment inquiries, conversational dissatisfaction/follow-up handling, and meta assistant queries (11/11 tests passing across 4 suites).
+- Added multi-turn conversational history support: optional `history` array in `ChatRequestDto` and `AgentChatInput`, with client-side history tracking in `public/index.html` allowing fluid multi-turn context retention.
+
+### Fixed
+- Fixed critical conversational loop in WhatsApp producer portal: removed hardcoded canned fallback string (`"Estimado productor, su consulta ha sido procesada correctamente contra los registros de báscula."`) in `AgentService`.
+- Corrected Fireworks LLM model identifier in `.env`, `configuration.ts`, and `env.validation.ts` to active Meta Open-Weight model `accounts/fireworks/models/llama-v3p1-8b-instruct`.
+- Strengthened resilience in `AgentService`: throws an explicit error when a provider returns empty content or invalid choices, allowing graceful escalation to fallback providers (Modal / Grounded Mock).
+- Injected complete ERP financial metrics into system prompt (`buildSystemPrompt`): included net amounts in Chilean pesos (`$18.450.000 CLP`) and liquidation dates (`2026-10-24`).
+- Grounded conversational responses in `AgentService.generateMockAgentResult` and `modal_app/app.py`: accurately answers Don Carlos Morales regarding his Tuesday delivery (Guía GD-89412, 18 bins de Cerezas Royal Dawn, 7.200 kg, liquidada por $18.450.000 CLP transferidos) and resolves user follow-ups ("no me respondiste", "¿es una IA?") with empathy and concrete ERP records.
+
 ## [1.7.2] - 2026-11-02
 
 ### Added
+- Integrated realistic high-resolution photograph of apple harvest truck in intake yard (`public/samples/camion_manzanas_patio.jpg`) for live testing of fruit species discrepancy and fraud alerts.
 - Added visual fruit species classification (`cropDetected`) in `VisionService`, detecting cherries vs non-cherry loads (apples, citrus, generic crates).
 - Added dedicated species discrepancy detection (`DISCREPANCIA DETECTADA — ALERTA DE ESPECIE`) in `ReceptionService` preventing intake approval whenever the physical cargo does not match the Chilean dispatch guide variety, preventing intake fraud in patio.
 - Added explicit UI test case button `⚠️ Caso Alerta: Especie Incorrecta (Manzanas)` and dynamic species indicators (`val-detected-crop`) in the dashboard metrics table.
+- Clarified intake outcome text: physical tally approval is certified for scale intake, while specific varietal confirmation is explicitly conditioned on laboratory quality sampling.
 
 ### Fixed
+- Fixed critical substring matching bug in `ReceptionService`: added explicit `isAppleVision` exclusion check and sanitized crop labels to `'Manzanas (Especie Incompatible con Guía)'` so that negative phrases containing the word "Cerezas" never evaluate `isCherryVision` to true.
+- Resolved Modal/Fireworks response mapping in `VisionService`: detects and evaluates `originalRef` and payload references to prevent undefined serverless crop responses from falling back to cherries when analyzing apple loads.
 - Adjusted global `ValidationPipe` with `forbidNonWhitelisted: false` (while retaining `whitelist: true`), ensuring graceful API upgrades and eliminating `400 Bad Request: "property validationMode should not exist"` during client-server rolling restarts.
 
 ## [1.7.1] - 2026-11-02

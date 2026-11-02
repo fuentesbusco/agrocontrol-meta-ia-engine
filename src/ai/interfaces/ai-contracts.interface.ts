@@ -60,6 +60,7 @@ export interface FarmerContext {
 export interface AgentChatInput {
   farmerId: string;
   userMessage: string;
+  history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
 
 export interface AgentChatResult {
