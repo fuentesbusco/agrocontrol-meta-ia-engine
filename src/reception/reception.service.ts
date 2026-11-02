@@ -71,8 +71,17 @@ export class ReceptionService {
 
     const detectedCrop = visionResult.cropDetected || 'Cerezas Lapins (Exportación)';
     const declaredCrop = ocrResult.cropType || 'Cerezas Lapins';
+
+    const isAppleVision =
+      detectedCrop.toLowerCase().includes('manzana') ||
+      detectedCrop.toLowerCase().includes('apple') ||
+      detectedCrop.toLowerCase().includes('incompatible') ||
+      detectedCrop.toLowerCase().includes('no corresponde');
+
     const isCherryVision =
-      detectedCrop.toLowerCase().includes('cereza') || detectedCrop.toLowerCase().includes('cherr');
+      !isAppleVision &&
+      (detectedCrop.toLowerCase().includes('cereza') || detectedCrop.toLowerCase().includes('cherr'));
+
     const isCherryOcr =
       declaredCrop.toLowerCase().includes('cereza') || declaredCrop.toLowerCase().includes('cherr');
     const fruitSpeciesMatches = isCherryVision && isCherryOcr;
@@ -115,8 +124,8 @@ export class ReceptionService {
           ? `Exact match: ${visionResult.totalBins} physical bins counted by SAM 3 == ${ocrResult.declaredBins} declared in guide ${ocrResult.documentId} (Especie: ${detectedCrop}).`
           : `Discrepancy detected: ${visionResult.totalBins} physical bins counted by SAM 3 != ${ocrResult.declaredBins} declared in guide ${ocrResult.documentId} (Difference: ${absDifference} bins).`;
         summary = isMatched
-          ? 'Physical truck bins and cherry crop match declared dispatch guide perfectly. Automatic intake approved for ERP.'
-          : 'Discrepancy detected between physical truck tally and declared guide. Flagged for supervisor manual review.';
+          ? `Conteo físico de ${visionResult.totalBins} bins aprobado para báscula. Nota agronómica: Certificación definitiva de variedad (${declaredCrop}) sujeta a muestreo en mesa de calidad.`
+          : `Discrepancy detected between physical truck tally and declared guide. Flagged for supervisor manual review.`;
       }
     }
 

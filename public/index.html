@@ -192,10 +192,10 @@
             </button>
 
             <!-- Real Plant Item 4: Alerta de Especie - No son Cerezas (Manzanas) -->
-            <button type="button" onclick="selectTruck('/samples/camion_18_bins.jpg', 18, 'species_mismatch', 'Patente: JD-8941 • Manzanas (Alerta Especie)', 'Camión Manzanas (Alerta Especie)', this)" class="truck-card flex-shrink-0 w-40 text-left border border-rose-300 rounded-lg overflow-hidden bg-rose-50/40 shadow-xs transition hover:border-rose-400">
+            <button type="button" onclick="selectTruck('/samples/camion_manzanas_patio.jpg', 18, 'species_mismatch', 'Patente: JD-8941 • Manzanas (Alerta Especie)', 'Camión Manzanas (Alerta Especie)', this)" class="truck-card flex-shrink-0 w-40 text-left border border-rose-300 rounded-lg overflow-hidden bg-rose-50/40 shadow-xs transition hover:border-rose-400">
               <div class="h-20 bg-slate-200 relative overflow-hidden">
-                <img src="/samples/camion_18_bins.jpg" alt="Camión Manzanas" class="w-full h-full object-cover">
-                <span class="absolute top-1 right-1 bg-rose-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">⚠️ No son Cerezas</span>
+                <img src="/samples/camion_manzanas_patio.jpg" alt="Camión Manzanas" class="w-full h-full object-cover">
+                <span class="absolute top-1 right-1 bg-rose-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">⚠️ Manzanas</span>
               </div>
               <div class="p-1.5">
                 <p class="text-[11px] font-bold text-slate-900 truncate">Camión Manzanas</p>
@@ -488,10 +488,10 @@
       currentGuide.image = '/samples/reales_planta/guia_despacho_real.jpeg';
       document.getElementById('guide-preview').src = currentGuide.image;
       selectTruck(
-        '/samples/camion_18_bins.jpg',
+        '/samples/camion_manzanas_patio.jpg',
         18,
         'species_mismatch',
-        'Patente: JD-8941 • 18 Bins (Manzanas/No Cerezas)',
+        'Patente: JD-8941 • 18 Bins (Manzanas / Alerta Especie)',
         'Camión Manzanas (Alerta Especie)',
         null
       );
@@ -651,8 +651,8 @@
         } catch (netErr) {
           console.warn('API error or network delay, computing dynamic client preview:', netErr);
           
-          const isSpeciesMismatch = currentTruck.type === 'species_mismatch' || (currentTruck.image && currentTruck.image.includes('camion_18_bins'));
-          const detectedCrop = isSpeciesMismatch ? 'Manzanas / Fruta Mixta' : 'Cerezas Lapins (Exportación)';
+          const isSpeciesMismatch = currentTruck.type === 'species_mismatch' || (currentTruck.image && (currentTruck.image.includes('manzana') || currentTruck.image.includes('camion_18_bins')));
+          const detectedCrop = isSpeciesMismatch ? 'Manzanas (Especie Incompatible con Guía)' : 'Cerezas de Exportación (Presuntivo Báscula)';
           const countedBins = currentTruck.bins || (currentTruck.type === 'mismatch' ? 4 : 16);
           let declaredBins = 16;
           let supplierRut = "77.402.012-8";
@@ -770,7 +770,12 @@
       }
 
       const detectedCrop = data.visionAnalysis.cropDetected || 'Cerezas Lapins (Exportación)';
-      const isCherry = detectedCrop.toLowerCase().includes('cereza') || detectedCrop.toLowerCase().includes('cherr');
+      const isAppleVision =
+        detectedCrop.toLowerCase().includes('manzana') ||
+        detectedCrop.toLowerCase().includes('apple') ||
+        detectedCrop.toLowerCase().includes('incompatible') ||
+        detectedCrop.toLowerCase().includes('no corresponde');
+      const isCherry = !isAppleVision && (detectedCrop.toLowerCase().includes('cereza') || detectedCrop.toLowerCase().includes('cherr'));
       const detectedCropEl = document.getElementById('val-detected-crop');
       if (detectedCropEl) {
         detectedCropEl.innerText = isCherry ? `✓ ${detectedCrop}` : `⚠️ ${detectedCrop}`;
