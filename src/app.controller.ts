@@ -40,6 +40,14 @@ export class AppController {
     return this.appService.getSystemStatus();
   }
 
+  @Get('favicon.ico')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Favicon handler suppressing browser 404 polling' })
+  @ApiResponse({ status: 204, description: 'No content' })
+  getFavicon(): void {
+    return;
+  }
+
   /**
    * Primary Multimodal Orchestrator Endpoint
    * Concurrently processes SAM 3 (truck vision) and Muse Glimmer (document OCR)

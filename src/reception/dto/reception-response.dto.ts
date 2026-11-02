@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ReceptionStatus } from '../../common/enums/ai-provider.enum';
 
 export class VisionAnalysisDto {
@@ -7,6 +7,12 @@ export class VisionAnalysisDto {
 
   @ApiProperty({ example: 2, description: 'Total wooden pallets detected' })
   totalPallets: number;
+
+  @ApiPropertyOptional({
+    example: 'Cerezas Lapins de Exportación',
+    description: 'Fruit species visually detected by computer vision',
+  })
+  cropDetected?: string;
 
   @ApiProperty({ example: 0.98, description: 'Computer vision confidence score' })
   confidenceScore: number;
@@ -95,4 +101,10 @@ export class ProcessReceptionResponseDto {
 
   @ApiProperty({ example: 215, description: 'Total end-to-end processing latency in milliseconds' })
   totalProcessingTimeMs: number;
+
+  @ApiPropertyOptional({ example: false, description: 'Whether the response was served from cache' })
+  fromCache?: boolean;
+
+  @ApiPropertyOptional({ example: 'FULL_RECONCILIATION', description: 'Executed validation mode' })
+  validationMode?: string;
 }

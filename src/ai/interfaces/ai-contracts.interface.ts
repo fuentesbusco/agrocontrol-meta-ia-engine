@@ -6,6 +6,7 @@ export interface VisionAnalysisInput {
 export interface VisionAnalysisResult {
   totalBins: number;
   totalPallets: number;
+  cropDetected?: string;
   confidenceScore: number;
   processingTimeMs: number;
   provider: string;

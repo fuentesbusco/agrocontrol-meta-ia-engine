@@ -28,6 +28,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
+    // Suppress noisy logs for browser favicon polling
+    if (request.url === '/favicon.ico' || request.url.endsWith('favicon.ico')) {
+      response.status(HttpStatus.NO_CONTENT).end();
+      return;
+    }
+
     const requestId =
       (request.headers['x-request-id'] as string) || uuidv4();
 

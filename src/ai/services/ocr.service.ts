@@ -37,6 +37,7 @@ export class OcrService {
     const startTime = Date.now();
 
     // 1. Prepare and optimize local image into base64 Data URL
+    const originalRef = input.image || '';
     const processedImage = await this.prepareAndOptimizeImage(input.image);
     const optimizedInput: OcrAnalysisInput = {
       ...input,
@@ -62,7 +63,7 @@ export class OcrService {
       }
     }
 
-    return this.generateMockOcrResult(optimizedInput, startTime, 'mock-emergency');
+    return this.generateMockOcrResult(optimizedInput, startTime, 'mock-emergency', originalRef);
   }
 
   /**
@@ -201,25 +202,36 @@ export class OcrService {
     input: OcrAnalysisInput,
     startTime: number,
     providerName: string,
+    originalRef: string = '',
   ): OcrExtractionResult {
     let declaredBins = 18;
     let declaredKilos = 7200;
     let documentId = 'GD-89412';
-    const supplierRut = input.expectedSupplierRut || '76.492.103-8';
-    const supplierName = 'Agrícola Los Nogales SpA';
+    let supplierRut = input.expectedSupplierRut || '76.492.103-8';
+    let supplierName = 'Agrícola Los Nogales SpA';
     let cropType = 'Royal Dawn Cherries (Cerezas Exportación)';
 
-    if (input.image && (input.image.includes('documento_recepcion_granel') || input.image.includes('granel'))) {
+    const checkStr = `${originalRef} ${input.image || ''}`.toLowerCase();
+
+    if (checkStr.includes('documento_recepcion_granel') || checkStr.includes('granel')) {
       declaredBins = 16;
       declaredKilos = 6400;
       documentId = 'REC-GRANEL-4481';
+      supplierRut = '77.402.012-8';
+      supplierName = 'Sociedad Agrícola Correa Edwards Ltda';
       cropType = 'Cerezas Lapins (Recepción a Granel)';
-    } else if (input.image && (input.image.includes('guia_despacho_real') || input.image.includes('guia_real'))) {
+    } else if (
+      checkStr.includes('guia_despacho_real') ||
+      checkStr.includes('guia_real') ||
+      supplierRut === '77.402.012-8'
+    ) {
       declaredBins = 16;
       declaredKilos = 6400;
       documentId = 'GD-92014';
+      supplierRut = '77.402.012-8';
+      supplierName = 'Sociedad Agrícola Correa Edwards Ltda';
       cropType = 'Cerezas Lapins de Exportación';
-    } else if (input.image && input.image.includes('large_load')) {
+    } else if (checkStr.includes('large_load')) {
       declaredBins = 24;
       declaredKilos = 9600;
       documentId = 'GD-89504';

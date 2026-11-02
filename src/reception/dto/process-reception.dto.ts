@@ -42,4 +42,14 @@ export class ProcessReceptionDto {
   @IsString()
   @IsOptional()
   supplierRut?: string;
+
+  @ApiPropertyOptional({
+    example: 'FULL_RECONCILIATION',
+    description: 'Operation mode: FULL_RECONCILIATION, VALIDATE_FRUIT, or VALIDATE_QUANTITY',
+    enum: ['FULL_RECONCILIATION', 'VALIDATE_FRUIT', 'VALIDATE_QUANTITY'],
+    default: 'FULL_RECONCILIATION',
+  })
+  @IsString()
+  @IsOptional()
+  validationMode?: 'FULL_RECONCILIATION' | 'VALIDATE_FRUIT' | 'VALIDATE_QUANTITY' = 'FULL_RECONCILIATION';
 }

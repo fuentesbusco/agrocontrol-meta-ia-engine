@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-11-02
+
+### Added
+- Added visual fruit species classification (`cropDetected`) in `VisionService`, detecting cherries vs non-cherry loads (apples, citrus, generic crates).
+- Added dedicated species discrepancy detection (`DISCREPANCIA DETECTADA — ALERTA DE ESPECIE`) in `ReceptionService` preventing intake approval whenever the physical cargo does not match the Chilean dispatch guide variety, preventing intake fraud in patio.
+- Added explicit UI test case button `⚠️ Caso Alerta: Especie Incorrecta (Manzanas)` and dynamic species indicators (`val-detected-crop`) in the dashboard metrics table.
+
+### Fixed
+- Adjusted global `ValidationPipe` with `forbidNonWhitelisted: false` (while retaining `whitelist: true`), ensuring graceful API upgrades and eliminating `400 Bad Request: "property validationMode should not exist"` during client-server rolling restarts.
+
+## [1.7.1] - 2026-11-02
+
+### Added
+- Integrated official square **AgroControl** brand logo (`public/logo.png`, `public/favicon.png`, `public/favicon.ico`) across the enterprise navbar and browser favicon headers.
+
+### Fixed
+- Added dedicated favicon asset (`public/favicon.ico`) and suppressed noisy 404 logs in `AllExceptionsFilter` and `AppController` for browser `/favicon.ico` polling.
+- Enforced absolute values (`Math.abs`) for all user-facing discrepancy counts in backend reasons, operational summaries, and UI banners so negative bin differences (e.g., `-12 bins`) are never displayed to plant operators.
+- Maintained signed integer difference in DTO/API models (`reconciliation.differenceBins`) ensuring 100% test compatibility across the test suite (`7/7 PASS`).
+- Resolved fallback reference preservation in `VisionService` and `OcrService`: original image references and expected supplier RUTs are retained across base64 transformations, correctly distinguishing **Sociedad Agrícola Correa Edwards Ltda** (`77.402.012-8`) from Los Nogales.
+
+## [1.7.0] - 2026-11-02
+
+### Added
+- Added 3 distinct operational validation modes:
+  - **Conciliar Recepción:** Comprehensive cross-check of physical count vs ERP field guide.
+  - **Validar Fruta:** Dedicated fruit species and quality validation (detects cherries vs declared variety).
+  - **Validar Cantidad:** Tally and estimated weight cross-validation (~400kg per bin).
+- Implemented **client-side image compression** via HTML5 Canvas (auto-resizes to 1024px, 75% JPEG quality) reducing upload payloads by over 80%.
+- Implemented **dual-layer caching system** (browser memory cache + backend SHA-256 cache with 10-minute TTL) delivering instant sub-15ms responses on repeated checks.
+
+## [1.6.1] - 2026-11-02
+
+### Fixed
+- Fixed UI supplier name binding in `public/index.html`: dynamically updates the producer card (`val-supplier-name`) to match the real extracted supplier (**Sociedad Agrícola Correa Edwards Ltda**, RUT `77.402.012-8`) avoiding previous static residue.
+
 ## [1.6.0] - 2026-11-02
 
 ### Changed

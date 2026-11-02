@@ -30,12 +30,12 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type,Accept,Authorization,X-Request-Id',
   });
 
-  // Global validation pipe
+  // Global validation pipe: whitelist strips unvalidated properties without breaking frontend clients
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transformOptions: { enableImplicitConversion: true },
     }),
   );
