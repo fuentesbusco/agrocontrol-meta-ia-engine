@@ -5,12 +5,12 @@
 - **Track & Problem Statement**: **Startup Track** (Atelier Busco SpA) · **Build for Your World**
 - **Hackathon Provenance (Oct 26 – Nov 4, 2026)**: Built 100% from scratch during the hackathon window (`Oct 26 – Nov 4, 2026`). No pre-existing codebase or legacy modules were used.
 - **Meta AI Runtime Models (Primary Engine + Multi-Tier Open-Weight & Failover Architecture)**:
-  - **`Muse Spark 1.3` (`api.meta.ai`) & `Muse Spark Open` (`meta-models/muse-spark-open-1026`)** — Primary reasoning, multi-turn ERP RAG tool-use, and grower financial settlement assistant (with automatic open-weight failover to **Modal Serverless** [`modal_app/app.py`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/modal_app/app.py) and **Fireworks AI** `llama-v3p1-8b-instruct`).
+  - **`Muse Spark 1.3` (`api.meta.ai`) & `Muse Spark Open` (`meta-models/muse-spark-open-1026`)** — Primary reasoning, multi-turn ERP RAG tool-use, and grower financial settlement assistant (with automatic open-weight failover to **Modal Serverless** [`modal_app/app.py`](modal_app/app.py) and **Fireworks AI** `llama-v3p1-8b-instruct`).
   - **`Muse Glimmer` (Meta Open-Weight Document OCR)** — Load-bearing open-weight extraction stage parsing dirty, handwritten Chilean agricultural dispatch guides (*Guías de Despacho de Campo* & *Recepción a Granel*) into structured JSON via Meta API and Modal Serverless (`glimmer_extract`).
   - **`SAM 3.1` (`SAM 3` Multimodal Vision Segmentation)** — Physical yard perception counting stacked wooden harvest bins and performing varietal/species fraud detection (identifying export cherries vs. incompatible apple loads) via Meta API and Modal Serverless (`sam3_predict`).
 - **Bonus Prize Categories Targeted**:
   - **Best Build on Meta Open Weight Models ($10k)** · **Best Agentic Use-Case** · **Best Creative Build**
-- **3-Minute Demo Video**: *(Insert Public YouTube / X Video URL before submission)*
+- **3-Minute Demo Video**: [https://youtu.be/oyPx62MJYmw](https://youtu.be/oyPx62MJYmw)
 - **Quickstart & Keyless Replay**: Run `cp .env.example .env` with your `META_API_KEY` / `FIREWORKS_API_KEY`, or run **`npm run demo:replay`** for an instant 1-command keyless verification of all 5 multimodal and agentic scenarios.
 
 ---
@@ -19,10 +19,10 @@
 
 | Rubric Pillar | Official Weight | Architectural Component | Implementation & Real-World B2B Value |
 | :--- | :--- | :--- | :--- |
-| **1. Impact** | **30% (3.0 pts)** | [`reception.service.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/src/reception/reception.service.ts) (`POST /api/reception/process`) | Eliminates manual clipboard tallying and intake fraud at fruit packing yards in Curicó, Chile. Cross-references physical wooden bins and fruit species against handwritten paper guides in `< 1.9s`. |
-| **2. Use of Meta AI Tooling** | **25% (2.5 pts)** | [`vision.service.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/src/ai/services/vision.service.ts), [`ocr.service.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/src/ai/services/ocr.service.ts), [`agent.service.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/src/ai/services/agent.service.ts) | Load-bearing multi-model pipeline combining **SAM 3.1** (visual bin & species inspection), **Muse Glimmer** (handwritten OCR), and **Muse Spark 1.3 / Muse Spark Open** (multi-turn grower RAG agent). |
-| **3. Technical Depth** | **20% (2.0 pts)** | [`configuration.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/src/config/configuration.ts), [`modal_app/app.py`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/modal_app/app.py) | 4-Tier failover circuit breaker (`Meta API -> Modal GPU -> Fireworks -> Local Deterministic Fallback`), HTML5 Canvas client-side compression (`-82%` payload size), SHA-256 dual-layer cache (`8ms` hit latency), and `11/11` unit tests across 4 suites. |
-| **4. Demo Quality** | **25% (2.5 pts)** | [`public/index.html`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/public/index.html) & [`scripts/demo-replay.ts`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/scripts/demo-replay.ts) | Split-Screen B2B SaaS Dashboard: **Screen A** (Yard Operator Multimodal Intake with 4 one-click real harvest test cases) + **Screen B** (Grower WhatsApp RAG Portal), plus 1-command CLI replay (`npm run demo:replay`). |
+| **1. Impact** | **30% (3.0 pts)** | [`reception.service.ts`](src/reception/reception.service.ts) (`POST /api/reception/process`) | Eliminates manual clipboard tallying and intake fraud at fruit packing yards in Curicó, Chile. Cross-references physical wooden bins and fruit species against handwritten paper guides in `< 1.9s`. |
+| **2. Use of Meta AI Tooling** | **25% (2.5 pts)** | [`vision.service.ts`](src/ai/services/vision.service.ts), [`ocr.service.ts`](src/ai/services/ocr.service.ts), [`agent.service.ts`](src/ai/services/agent.service.ts) | Load-bearing multi-model pipeline combining **SAM 3.1** (visual bin & species inspection), **Muse Glimmer** (handwritten OCR), and **Muse Spark 1.3 / Muse Spark Open** (multi-turn grower RAG agent). |
+| **3. Technical Depth** | **20% (2.0 pts)** | [`configuration.ts`](src/config/configuration.ts), [`modal_app/app.py`](modal_app/app.py) | 4-Tier failover circuit breaker (`Meta API -> Modal GPU -> Fireworks -> Local Deterministic Fallback`), HTML5 Canvas client-side compression (`-82%` payload size), SHA-256 dual-layer cache (`8ms` hit latency), and `11/11` unit tests across 4 suites. |
+| **4. Demo Quality** | **25% (2.5 pts)** | [`public/index.html`](public/index.html) & [`scripts/demo-replay.ts`](scripts/demo-replay.ts) | Split-Screen B2B SaaS Dashboard: **Screen A** (Yard Operator Multimodal Intake with 4 one-click real harvest test cases) + **Screen B** (Grower WhatsApp RAG Portal), plus 1-command CLI replay (`npm run demo:replay`). |
 
 ---
 
@@ -99,7 +99,7 @@ Evaluated across real field photographs from Curicó reception yards (`public/sa
 
 ## 🧪 Partner Verification: Open-Weight Serverless Stage (`modal_app/app.py`)
 
-To qualify for and facilitate verification of the **Best Build on Meta Open Weight Models ($10k)** category, the repository includes the complete Modal Serverless deployment in [`modal_app/app.py`](file:///home/daniel/projects/agrocontrol-meta-ia-engine/modal_app/app.py):
+To qualify for and facilitate verification of the **Best Build on Meta Open Weight Models ($10k)** category, the repository includes the complete Modal Serverless deployment in [`modal_app/app.py`](modal_app/app.py):
 
 1. **`sam3_predict` (`POST`):** Executes visual feature segmentation, aspect-ratio geometry analysis, and HSV/RGB cherry-vs-apple color distribution to count stacked bins (`16`, `7`, `4`, or `18` bins) and flag incompatible fruit species.
 2. **`glimmer_extract` (`POST`):** Runs **Muse Glimmer** document extraction on dirty handwritten Chilean dispatch guides (`GD-92014` for *Sociedad Agrícola Correa Edwards Ltda*, RUT `77.402.012-8`) and vertical bulk intake receipts (`REC-GRANEL-4481`).
@@ -190,4 +190,4 @@ timeline
 ## 📄 License & Attribution
 
 Developed 100% from scratch during the **Meta Global AI Hackathon 2026** (`Oct 26 – Nov 4, 2026`) by **Daniel Fuentes Busco** (Founder, **Atelier Busco SpA**, Chile).  
-Released under the [MIT License](file:///home/daniel/projects/agrocontrol-meta-ia-engine/LICENSE).
+Released under the [MIT License](LICENSE).
