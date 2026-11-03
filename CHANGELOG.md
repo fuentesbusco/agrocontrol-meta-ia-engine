@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.8.0] - 2026-11-02
 
 ### Added
+- Refined UI/UX for official 3-minute video presentation: added explicit Meta AI model badges (`Meta SAM 3.1 Vision`, `Meta Muse Glimmer OCR`, and `Meta Muse Spark Open`), redesigned bottom overlay bars on image slots preventing text overlap, reorganized preset scenario buttons into a clean 3-column grid, and set WhatsApp panel to `h-[760px] lg:sticky lg:top-6` for balanced split-screen alignment.
 - Implemented **Live Scale-to-WhatsApp Proactive Bridge** (`notifyWhatsAppFromScale` in `public/index.html`): whenever a reception is processed on the Yard Operator screen, an automated, color-coded WhatsApp notification card is pushed to the grower portal (`APPROVED`, `ALERTA DE ESPECIE`, or `DISCREPANCIA DE CANTIDAD`) and injected into the multi-turn agent memory.
 - Added 2 new quick-action inquiry chips in WhatsApp (`⚠️ "¿Qué pasó con la discrepancia?"` and `👍 "Autorizo recepcionar bins físicos"`) with ERP authorization handling in `AgentService`.
 - Created 1-command keyless judge replay and benchmark script (`scripts/demo-replay.ts` via `npm run demo:replay`) executing all 5 core multimodal and agentic scenarios deterministically without requiring external API keys.

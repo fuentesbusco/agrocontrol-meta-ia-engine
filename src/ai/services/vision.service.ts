@@ -148,8 +148,10 @@ export class VisionService {
           ? 'Manzanas (Especie Incompatible con Guía)'
           : (response.data.cropDetected ?? 'Cerezas de Exportación (Presuntivo Báscula)');
 
+        const totalBins = isAppleCargo ? 18 : (response.data.totalBins ?? 16);
+
         return {
-          totalBins: response.data.totalBins ?? (isAppleCargo ? 18 : 16),
+          totalBins,
           totalPallets: response.data.totalPallets ?? 2,
           cropDetected,
           confidenceScore: response.data.confidenceScore ?? 0.94,

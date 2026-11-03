@@ -123,21 +123,39 @@
       
       <!-- Top Card Header & Presets -->
       <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-slate-100">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Ingesta y Conciliación de Carga</h2>
-            <p class="text-xs text-slate-500">Verificación cruzada de conteo físico de bins y guía de despacho de campo.</p>
+        <div class="pb-3 border-b border-slate-100 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold text-slate-900">Ingesta y Conciliación de Carga</h2>
+                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded border border-emerald-300 uppercase tracking-wide">Báscula Patio Norte</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Verificación cruzada de conteo físico de bins y guía de despacho de campo.</p>
+            </div>
+            <span class="hidden sm:inline-flex text-[10px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+              Escenarios Pre-Cargados
+            </span>
           </div>
-          <!-- Quick Status & Cases Header -->
-          <div class="flex items-center gap-2">
-            <button onclick="loadMatchedCase()" id="btn-match" class="text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-lg transition shadow-2xs">
-              ✓ Caso Exitoso: 16 Bins Planta (Coincide)
+
+          <!-- Quick Status & Cases Header (Grid of 3 full-width columns) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button onclick="loadMatchedCase()" id="btn-match" class="text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 py-2 px-3 rounded-lg transition shadow-2xs text-left flex flex-col">
+              <span class="font-bold flex items-center gap-1 text-[11px] text-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Caso Exitoso (Match)
+              </span>
+              <span class="text-[10px] text-slate-600 truncate">16 Bins Cerezas == Guía (16)</span>
             </button>
-            <button onclick="loadMismatchCase()" id="btn-mismatch" class="text-xs font-medium bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg transition shadow-2xs">
-              ! Caso Alerta: Discrepancia Bins (4 vs 16)
+            <button onclick="loadMismatchCase()" id="btn-mismatch" class="text-xs font-medium bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 py-2 px-3 rounded-lg transition shadow-2xs text-left flex flex-col">
+              <span class="font-bold flex items-center gap-1 text-[11px] text-amber-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Alerta Cantidad
+              </span>
+              <span class="text-[10px] text-slate-600 truncate">4 Bins Físicos vs 16 en Guía</span>
             </button>
-            <button onclick="loadSpeciesMismatchCase()" id="btn-species" class="text-xs font-medium bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 px-3 py-1.5 rounded-lg transition shadow-2xs">
-              ⚠️ Caso Alerta: Especie Incorrecta (Manzanas)
+            <button onclick="loadSpeciesMismatchCase()" id="btn-species" class="text-xs font-medium bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 py-2 px-3 rounded-lg transition shadow-2xs text-left flex flex-col">
+              <span class="font-bold flex items-center gap-1 text-[11px] text-rose-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> Alerta Especie (Fraude)
+              </span>
+              <span class="text-[10px] text-slate-600 truncate">18 Bins Manzanas vs Cerezas</span>
             </button>
           </div>
         </div>
@@ -216,16 +234,20 @@
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 Fotografía Camión en Patio
               </span>
-              <label class="cursor-pointer text-[11px] font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 transition flex items-center gap-1">
-                <span>Subir Foto</span>
-                <input type="file" id="truck-file-input" accept="image/*" class="hidden" onchange="handleUserFileUpload(event, 'truck')" />
-              </label>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded">Meta SAM 3.1</span>
+                <label class="cursor-pointer text-[11px] font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 transition flex items-center gap-1">
+                  <span>Subir</span>
+                  <input type="file" id="truck-file-input" accept="image/*" class="hidden" onchange="handleUserFileUpload(event, 'truck')" />
+                </label>
+              </div>
             </div>
-            <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-100 h-48 shadow-inner group">
+            <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-900 h-48 shadow-inner group">
               <img id="truck-preview" src="/samples/reales_planta/camion_8_columnas_cerezas.jpeg" alt="Camión con bins" class="w-full h-full object-cover">
-              <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-sm text-white px-2.5 py-1.5 rounded text-[11px] flex justify-between items-center">
-                <span id="truck-tag">Patente: GR-7721 • 16 Bins Reales</span>
-                <span class="font-mono text-emerald-400">Inspección Activa</span>
+              <!-- Unified Non-Colliding Bottom Bar -->
+              <div class="absolute bottom-0 inset-x-0 bg-slate-950/85 backdrop-blur-xs text-white px-3 py-2 text-[11px] flex justify-between items-center border-t border-white/10 gap-2">
+                <span id="truck-tag" class="truncate font-medium text-emerald-300">Patente: GR-7721 • 16 Bins Reales</span>
+                <span class="font-mono text-[10px] text-emerald-400 font-bold flex-shrink-0 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">16 Bins Estimados</span>
               </div>
             </div>
           </div>
@@ -237,16 +259,20 @@
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Guía de Despacho de Campo
               </span>
-              <label class="cursor-pointer text-[11px] font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded border border-slate-300 transition flex items-center gap-1">
-                <span>Subir Guía</span>
-                <input type="file" id="guide-file-input" accept="image/*" class="hidden" onchange="handleUserFileUpload(event, 'guide')" />
-              </label>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">Meta Muse Glimmer</span>
+                <label class="cursor-pointer text-[11px] font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded border border-slate-300 transition flex items-center gap-1">
+                  <span>Subir</span>
+                  <input type="file" id="guide-file-input" accept="image/*" class="hidden" onchange="handleUserFileUpload(event, 'guide')" />
+                </label>
+              </div>
             </div>
-            <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-100 h-48 shadow-inner group">
+            <div class="relative border border-slate-200 rounded-lg overflow-hidden bg-slate-900 h-48 shadow-inner group">
               <img id="guide-preview" src="/samples/reales_planta/guia_despacho_real.jpeg" alt="Guía de campo" class="w-full h-full object-cover object-top">
-              <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-sm text-white px-2.5 py-1.5 rounded text-[11px] flex justify-between items-center">
-                <span id="guide-tag">Documento: Guía de Huerto</span>
-                <span class="font-mono text-slate-300">Extracción OCR</span>
+              <!-- Unified Non-Colliding Bottom Bar -->
+              <div class="absolute bottom-0 inset-x-0 bg-slate-950/85 backdrop-blur-xs text-white px-3 py-2 text-[11px] flex justify-between items-center border-t border-white/10 gap-2">
+                <span id="guide-tag" class="truncate font-medium text-slate-200">Documento: Guía de Huerto GD-92014</span>
+                <span class="font-mono text-[10px] text-indigo-300 font-bold flex-shrink-0 bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-800">16 Bins Declarados</span>
               </div>
             </div>
           </div>
@@ -342,7 +368,7 @@
     </section>
 
     <!-- Screen B: Producer WhatsApp Portal (5 cols) -->
-    <section class="lg:col-span-5 flex flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-[700px]">
+    <section class="lg:col-span-5 flex flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-[760px] lg:sticky lg:top-6">
       
       <!-- Authentic WhatsApp Header -->
       <div class="bg-[#075E54] text-white px-4 py-3 flex items-center justify-between shadow-sm">
@@ -355,13 +381,16 @@
               <span>Don Carlos Morales</span>
               <svg class="w-3.5 h-3.5 text-emerald-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             </h3>
-            <p class="text-[11px] text-emerald-100/90">Agrícola Los Nogales SpA • En línea</p>
+            <p class="text-[11px] text-emerald-100/90" id="whatsapp-producer-label">Canal Productores • Planta Curicó</p>
           </div>
         </div>
 
-        <span class="text-[10px] font-medium bg-emerald-800/80 text-white px-2 py-0.5 rounded border border-emerald-600">
-          Recepción Planta Curicó
-        </span>
+        <div class="flex flex-col items-end gap-1">
+          <span class="text-[9px] font-bold bg-white text-emerald-950 px-2 py-0.5 rounded shadow-xs border border-white/40 uppercase tracking-wider">
+            Meta Muse Spark
+          </span>
+          <span class="text-[9px] text-emerald-200 font-medium">Báscula en Vivo</span>
+        </div>
       </div>
 
       <!-- Quick Inquiry Chips -->
@@ -455,20 +484,27 @@
       if (tag) {
         tag.innerText = tagText;
         if (type === 'match') {
-          tag.className = "text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+          tag.className = "truncate font-medium text-emerald-300";
         } else if (type === 'species_mismatch') {
-          tag.className = "text-[11px] font-medium text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-300";
+          tag.className = "truncate font-medium text-rose-300 font-semibold";
         } else if (type === 'large_load') {
-          tag.className = "text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200";
+          tag.className = "truncate font-medium text-sky-300";
         } else {
-          tag.className = "text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
+          tag.className = "truncate font-medium text-amber-300";
         }
       }
 
-      // Update badge overlay inside preview
+      // Update badge overlay inside preview without collisions
       const previewOverlay = preview ? preview.parentElement.querySelector('.font-mono') : null;
       if (previewOverlay) {
         previewOverlay.innerText = `${bins} Bins Estimados`;
+        if (type === 'species_mismatch') {
+          previewOverlay.className = "font-mono text-[10px] text-rose-300 font-bold flex-shrink-0 bg-rose-950/90 px-2 py-0.5 rounded border border-rose-800";
+        } else if (type === 'match') {
+          previewOverlay.className = "font-mono text-[10px] text-emerald-400 font-bold flex-shrink-0 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800";
+        } else {
+          previewOverlay.className = "font-mono text-[10px] text-amber-300 font-bold flex-shrink-0 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-800";
+        }
       }
 
       // Update active card styling
@@ -493,13 +529,15 @@
     function loadSpeciesMismatchCase() {
       currentGuide.image = '/samples/reales_planta/guia_despacho_real.jpeg';
       document.getElementById('guide-preview').src = currentGuide.image;
+      const cards = document.querySelectorAll('.truck-card');
+      const speciesCard = cards.length >= 4 ? cards[3] : null;
       selectTruck(
         '/samples/camion_manzanas_patio.jpg',
         18,
         'species_mismatch',
         'Patente: JD-8941 • 18 Bins (Manzanas / Alerta Especie)',
         'Camión Manzanas (Alerta Especie)',
-        null
+        speciesCard
       );
     }
 
@@ -659,7 +697,7 @@
           
           const isSpeciesMismatch = currentTruck.type === 'species_mismatch' || (currentTruck.image && (currentTruck.image.includes('manzana') || currentTruck.image.includes('camion_18_bins')));
           const detectedCrop = isSpeciesMismatch ? 'Manzanas (Especie Incompatible con Guía)' : 'Cerezas de Exportación (Presuntivo Báscula)';
-          const countedBins = currentTruck.bins || (currentTruck.type === 'mismatch' ? 4 : 16);
+          const countedBins = isSpeciesMismatch ? 18 : (currentTruck.bins || (currentTruck.type === 'mismatch' ? 4 : 16));
           let declaredBins = 16;
           let supplierRut = "77.402.012-8";
           let supplierName = "Sociedad Agrícola Correa Edwards Ltda";

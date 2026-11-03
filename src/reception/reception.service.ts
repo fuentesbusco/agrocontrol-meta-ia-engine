@@ -98,18 +98,26 @@ export class ReceptionService {
         : `Alerta de variedad: Especie física (${detectedCrop}) no coincide con lo declarado en guía de campo (${declaredCrop}).`;
     } else if (mode === 'VALIDATE_QUANTITY') {
       // Compares physical bin tally and estimated weight (approx 400kg/bin)
-      const estimatedWeightKilos = visionResult.totalBins * 400;
-      const weightDifference = Math.abs(estimatedWeightKilos - ocrResult.declaredKilos);
-      const binsMatch = rawDiff === 0;
+      // Check species integrity first: if species is incompatible, immediately alert fraud
+      if (!fruitSpeciesMatches) {
+        isMatched = false;
+        status = ReceptionStatus.FLAGGED_FOR_REVIEW;
+        reason = `Discrepancia crítica de especie: Fruta física detectada [${detectedCrop}] no coincide con lo declarado en la guía [${declaredCrop}]. Posible error de huerto o fraude de carga.`;
+        summary = `Alerta de variedad: Especie física (${detectedCrop}) no coincide con lo declarado en guía de campo (${declaredCrop}).`;
+      } else {
+        const estimatedWeightKilos = visionResult.totalBins * 400;
+        const weightDifference = Math.abs(estimatedWeightKilos - ocrResult.declaredKilos);
+        const binsMatch = rawDiff === 0;
 
-      isMatched = binsMatch || weightDifference < 800;
-      status = isMatched ? ReceptionStatus.APPROVED : ReceptionStatus.FLAGGED_FOR_REVIEW;
-      reason = binsMatch
-        ? `Cantidad validada: ${visionResult.totalBins} bins físicos coinciden con ${ocrResult.declaredBins} declarados (Peso est: ${estimatedWeightKilos} kg vs ${ocrResult.declaredKilos} kg).`
-        : `Discrepancia en cantidad: ${visionResult.totalBins} bins contados vs ${ocrResult.declaredBins} declarados (Diferencia: ${absDifference} bins).`;
-      summary = isMatched
-        ? 'Validación física de peso y bins aprobada para báscula.'
-        : 'Discrepancia de peso o conteo de bins detectada en patio.';
+        isMatched = binsMatch || weightDifference < 800;
+        status = isMatched ? ReceptionStatus.APPROVED : ReceptionStatus.FLAGGED_FOR_REVIEW;
+        reason = binsMatch
+          ? `Cantidad validada: ${visionResult.totalBins} bins físicos coinciden con ${ocrResult.declaredBins} declarados (Peso est: ${estimatedWeightKilos} kg vs ${ocrResult.declaredKilos} kg).`
+          : `Discrepancia en cantidad: ${visionResult.totalBins} bins contados vs ${ocrResult.declaredBins} declarados (Diferencia: ${absDifference} bins).`;
+        summary = isMatched
+          ? 'Validación física de peso y bins aprobada para báscula.'
+          : 'Discrepancia de peso o conteo de bins detectada en patio.';
+      }
     } else {
       // FULL_RECONCILIATION: Complete cross-validation (Both bin count AND species must match)
       if (!fruitSpeciesMatches) {
