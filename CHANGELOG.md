@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Created 1-command keyless judge replay and benchmark script (`scripts/demo-replay.ts` via `npm run demo:replay`) executing all 5 core multimodal and agentic scenarios deterministically without requiring external API keys.
 - Added official **Meta Global AI Hackathon 2026 — Submission Overview** provenance header and **Quantitative Benchmarks & Evaluation Metrics** table to `README.md` to support Stage 1 bonus prize flagging ($10k Open Weights, Best Agentic, Best Creative) and Stage 2 rubric verification (30/25/20/25 weights).
-- Created `HACKATHON_SUBMISSION.md` with copy-paste Cerebral Valley portal descriptions, X/Twitter viral post template, and a second-by-second 2:55 demo video script.
 - Added open-source `LICENSE` (MIT) in repository root and updated `package.json` metadata.
 
 ### Changed
