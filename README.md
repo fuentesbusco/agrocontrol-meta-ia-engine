@@ -13,6 +13,10 @@
 - **3-Minute Demo Video**: [https://youtu.be/oyPx62MJYmw](https://youtu.be/oyPx62MJYmw)
 - **Quickstart & Keyless Replay**: Run `cp .env.example .env` with your `META_API_KEY` / `FIREWORKS_API_KEY`, or run **`npm run demo:replay`** for an instant 1-command keyless verification of all 5 multimodal and agentic scenarios.
 
+## Screenshot of the Application
+
+![AgroControl Multimodal - Split-Screen Yard & WhatsApp Dashboard](public/screenshot-agro-contro-multimodal.png?raw=true "AgroControl Multimodal - Split-Screen Yard & WhatsApp Dashboard")
+
 ---
 
 ## 📋 Stage 2 Rubric & Technical Architecture Mapping (30 / 25 / 20 / 25 Weights)
