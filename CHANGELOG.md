@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Sanitized `.env.example` removing placeholder credentials and documenting the 4-tier architecture (Primary Meta AI models `SAM 3.1`, `Muse Glimmer`, `Muse Spark 1.3 / Muse Spark Open` + Modal Serverless GPU, Fireworks AI Serverless, and Local Deterministic Fallback).
-- Updated `.gitignore` to exclude Python bytecode and Modal cache directories (`__pycache__/`, `*.py[cod]`, `.modal/`).
+- Updated `.gitignore` to exclude Python bytecode, Modal cache directories (`__pycache__/`, `*.py[cod]`, `.modal/`), and local submission notes.
+
+### Fixed
+- Excluded `scripts` from `tsconfig.build.json` and anchored static asset resolution in `src/main.ts` to `join(process.cwd(), 'public')`, preventing TypeScript rootDir shifts from breaking `public/index.html` serving at `GET /`.
 
 ## [1.7.3] - 2026-11-02
 
