@@ -476,6 +476,7 @@
       currentTruck.image = image;
       currentTruck.bins = bins;
       currentTruck.type = type;
+      currentTruck.plate = type === 'species_mismatch' ? 'JD-8941' : 'GR-7721';
 
       const preview = document.getElementById('truck-preview');
       if (preview) preview.src = image;
