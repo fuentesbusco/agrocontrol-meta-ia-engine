@@ -1,16 +1,17 @@
 {
   "name": "agrocontrol-meta-ia-engine",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.7.3",
+  "description": "Multimodal Field-to-Plant Agricultural Reconciliation Engine powered by Meta AI (SAM 3.1, Muse Glimmer, Muse Spark Open)",
+  "author": "Daniel Fuentes Busco (Atelier Busco SpA)",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=10.0.0"
   },
   "scripts": {
     "build": "nest build",
+    "demo:replay": "ts-node scripts/demo-replay.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

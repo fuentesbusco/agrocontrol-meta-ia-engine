@@ -35,3 +35,9 @@ Thumbs.db
 
 # Coverage
 /coverage
+
+# Python & Modal Serverless Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.modal/

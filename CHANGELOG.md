@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-11-02
+
+### Added
+- Created 1-command keyless judge replay and benchmark script (`scripts/demo-replay.ts` via `npm run demo:replay`) executing all 5 core multimodal and agentic scenarios deterministically without requiring external API keys.
+- Added official **Meta Global AI Hackathon 2026 — Submission Overview** provenance header and **Quantitative Benchmarks & Evaluation Metrics** table to `README.md` to support Stage 1 bonus prize flagging ($10k Open Weights, Best Agentic, Best Creative) and Stage 2 rubric verification (30/25/20/25 weights).
+- Created `HACKATHON_SUBMISSION.md` with copy-paste Cerebral Valley portal descriptions, X/Twitter viral post template, and a second-by-second 2:55 demo video script.
+- Added open-source `LICENSE` (MIT) in repository root and updated `package.json` metadata.
+
+### Changed
+- Sanitized `.env.example` removing placeholder credentials and documenting the 4-tier architecture (Primary Meta AI models `SAM 3.1`, `Muse Glimmer`, `Muse Spark 1.3 / Muse Spark Open` + Modal Serverless GPU, Fireworks AI Serverless, and Local Deterministic Fallback).
+- Updated `.gitignore` to exclude Python bytecode and Modal cache directories (`__pycache__/`, `*.py[cod]`, `.modal/`).
+
 ## [1.7.3] - 2026-11-02
 
 ### Added

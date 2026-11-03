@@ -31,5 +31,6 @@
 ## Phase 5: Testing, Real-World Data & Demo Recording (Current)
 - [x] Integrate initial real-world truck photos from agricultural yard & authentic Chilean handwritten dispatch guide
 - [x] Verify live multi-provider failover (Meta AI Platform -> Modal Serverless -> Fireworks AI -> Local Mock)
-- [ ] Incorporate additional real photos from Curicó harvest (weekend)
-- [ ] Record 3-minute split-screen demo video highlighting the physical-to-digital transformation (next week)
+- [x] Incorporate additional real photos from Curicó harvest (`camion_8_columnas_bins.jpg`, `camion_2_columnas_bins.jpg`, `fila_7_bins.jpg`, `camion_manzanas_patio.jpg`, `guia_despacho_real.jpg`, `documento_recepcion_granel.jpg`)
+- [x] Complete 20-Point Hackathon Submission Checklist (`README.md` provenance header, quantitative benchmarks, `npm run demo:replay`, MIT `LICENSE`, `HACKATHON_SUBMISSION.md`)
+- [ ] Record 3-minute split-screen demo video (2:55 script ready in `HACKATHON_SUBMISSION.md`)
