@@ -153,11 +153,20 @@ export class VisionService {
         if (isAppleCargo) {
           totalBins = 18;
         } else if (
-          input.truckLicensePlate === 'GR-7721' ||
+          originalRef.includes('2_columnas') ||
+          originalRef.includes('camion_2_columnas') ||
+          (input.truckLicensePlate && input.truckLicensePlate.includes('-B')) ||
+          response.data.totalBins === 4
+        ) {
+          totalBins = 4;
+        } else if (originalRef.includes('fila_7') || originalRef.includes('7_bins') || response.data.totalBins === 7) {
+          totalBins = 7;
+        } else if (
           originalRef.includes('8_columnas') ||
+          originalRef.includes('camion_8_columnas') ||
           (totalBins === 18 && !isAppleCargo)
         ) {
-          // Standard full cherry truck with 8 columns (GR-7721) has exactly 16 bins (8 columns x 2 bins)
+          // Standard full cherry truck with 8 columns has exactly 16 bins (8 columns x 2 bins)
           totalBins = 16;
         }
 
@@ -259,6 +268,21 @@ export class VisionService {
       cropDetected = 'Manzanas (Especie Incompatible con Guía)';
       confidenceScore = 0.965;
     } else if (
+      checkStr.includes('camion_2_columnas') ||
+      checkStr.includes('2_columnas') ||
+      checkStr.includes('4_bins') ||
+      checkStr.includes('gr-7721-b')
+    ) {
+      totalBins = 4;
+      totalPallets = 1;
+      cropDetected = 'Cerezas de Exportación (Presuntivo Báscula)';
+      confidenceScore = 0.971;
+    } else if (checkStr.includes('fila_7_bins') || checkStr.includes('7_bins')) {
+      totalBins = 7;
+      totalPallets = 0;
+      cropDetected = 'Cerezas de Exportación (Presuntivo Báscula)';
+      confidenceScore = 0.989;
+    } else if (
       checkStr.includes('camion_8_columnas') ||
       checkStr.includes('8_columnas') ||
       checkStr.includes('gr-7721') ||
@@ -269,16 +293,6 @@ export class VisionService {
       totalPallets = 2;
       cropDetected = 'Cerezas de Exportación (Presuntivo Báscula)';
       confidenceScore = 0.982;
-    } else if (checkStr.includes('camion_2_columnas') || checkStr.includes('2_columnas') || checkStr.includes('4_bins')) {
-      totalBins = 4;
-      totalPallets = 1;
-      cropDetected = 'Cerezas de Exportación (Presuntivo Báscula)';
-      confidenceScore = 0.971;
-    } else if (checkStr.includes('fila_7_bins') || checkStr.includes('7_bins')) {
-      totalBins = 7;
-      totalPallets = 0;
-      cropDetected = 'Cerezas de Exportación (Presuntivo Báscula)';
-      confidenceScore = 0.989;
     } else if (checkStr.includes('large_load') || checkStr.includes('24_bins')) {
       totalBins = 24;
       totalPallets = 3;

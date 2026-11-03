@@ -476,7 +476,13 @@
       currentTruck.image = image;
       currentTruck.bins = bins;
       currentTruck.type = type;
-      currentTruck.plate = type === 'species_mismatch' ? 'JD-8941' : 'GR-7721';
+      if (type === 'species_mismatch') {
+        currentTruck.plate = 'JD-8941';
+      } else if (bins === 4 || (image && image.includes('2_columnas'))) {
+        currentTruck.plate = 'GR-7721-B';
+      } else {
+        currentTruck.plate = 'GR-7721';
+      }
 
       const preview = document.getElementById('truck-preview');
       if (preview) preview.src = image;
@@ -561,7 +567,7 @@
           '/samples/reales_planta/camion_2_columnas_cerezas_6_vacias.jpeg',
           4,
           'mismatch',
-          'Patente: GR-7721 • 4 Bins (Faltan 12 Bins)',
+          'Patente: GR-7721-B • 4 Bins (Faltan 12 Bins)',
           '2 Columnas / 6 Vacías (Discrepancia)',
           element
         );

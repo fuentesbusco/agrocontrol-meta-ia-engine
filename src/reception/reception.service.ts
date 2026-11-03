@@ -106,10 +106,9 @@ export class ReceptionService {
         summary = `Alerta de variedad: Especie física (${detectedCrop}) no coincide con lo declarado en guía de campo (${declaredCrop}).`;
       } else {
         const estimatedWeightKilos = visionResult.totalBins * 400;
-        const weightDifference = Math.abs(estimatedWeightKilos - ocrResult.declaredKilos);
         const binsMatch = rawDiff === 0;
 
-        isMatched = binsMatch || weightDifference < 800;
+        isMatched = binsMatch;
         status = isMatched ? ReceptionStatus.APPROVED : ReceptionStatus.FLAGGED_FOR_REVIEW;
         reason = binsMatch
           ? `Cantidad validada: ${visionResult.totalBins} bins físicos coinciden con ${ocrResult.declaredBins} declarados (Peso est: ${estimatedWeightKilos} kg vs ${ocrResult.declaredKilos} kg).`
