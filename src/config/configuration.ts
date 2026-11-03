@@ -106,7 +106,7 @@ export default (): AppConfiguration => {
         ocrModel: process.env.FIREWORKS_OCR_MODEL || 'accounts/fireworks/models/muse-glimmer-v1',
         agentModel:
           process.env.FIREWORKS_AGENT_MODEL ||
-          'accounts/fireworks/models/llama-v3p1-8b-instruct',
+          'accounts/fireworks/models/muse-spark-open',
       },
     },
   };

@@ -82,7 +82,7 @@ export class AgentService {
         }
         const url = `${fireworksConfig.baseUrl}/chat/completions`;
         const model =
-          fireworksConfig.agentModel || 'accounts/fireworks/models/llama-v3p1-8b-instruct';
+          fireworksConfig.agentModel || 'accounts/fireworks/models/muse-spark-open';
 
         const conversationMessages: Array<{ role: string; content: string }> = [
           { role: 'system', content: systemPrompt },
@@ -108,7 +108,7 @@ export class AgentService {
               model,
               messages: conversationMessages,
               temperature: 0.3,
-              max_tokens: 500,
+              max_tokens: 2048,
             },
             {
               headers: {
@@ -120,7 +120,12 @@ export class AgentService {
           ),
         );
 
-        const replyText = response.data?.choices?.[0]?.message?.content?.trim();
+        const rawContent: string =
+          response.data?.choices?.[0]?.message?.content || '';
+        const replyText = rawContent
+          .replace(/<think>[\s\S]*?<\/think>/gi, '')
+          .trim();
+
         if (!replyText) {
           throw new Error(
             `Fireworks model [${model}] returned empty or unparseable response payload: ${JSON.stringify(response.data)}`,
@@ -131,7 +136,7 @@ export class AgentService {
           agentResponse: replyText,
           intent: this.detectIntent(input.userMessage),
           groundedDeliveriesCount: context?.deliveries.length || 0,
-          provider: 'fireworks-llama3-instruct',
+          provider: 'fireworks-muse-spark-openweight',
           referencedDeliveries: context?.deliveries || [],
         };
       }
