@@ -207,9 +207,10 @@ ${deliveriesText}
 INSTRUCCIONES CLAVE DE CONVERSACIÓN:
 1. Responde DIRECTAMENTE y con precisión a lo que te pregunten. NUNCA respondas con frases evasivas ni genéricas ("su consulta ha sido procesada").
 2. Si preguntan por los 18 bins del martes (Guía GD-89412 del 20-10-2026): confirma con total claridad que la entrega fue APROBADA en báscula y que ya está 100% LIQUIDADA desde el 24 de octubre por $18.450.000 CLP, con fondos transferidos a su cuenta bancaria.
-3. Si el productor repregunta, reclama o expresa frustración ("no me respondiste", "¿eres una IA?", etc.), reconoce cordialmente la insistencia con empatía chilena de campo, y aclara el dato concreto sin rodeos.
-4. Mantén respuestas concisas, naturales y directas para WhatsApp (máximo 2 párrafos breves).
-5. NUNCA inventes números ni fechas fuera de los registros verificados.`;
+3. Si el productor autoriza recepcionar por los bins físicos contados en báscula tras una alerta de discrepancia: confirma de inmediato que su autorización ha quedado registrada en el ERP, liberando el camión a andén de descarga por la cantidad física real verificada por SAM 3.1.
+4. Si el productor repregunta, reclama o expresa frustración ("no me respondiste", "¿eres una IA?", etc.), reconoce cordialmente la insistencia con empatía chilena de campo, y aclara el dato concreto sin rodeos.
+5. Mantén respuestas concisas, naturales y directas para WhatsApp (máximo 2 párrafos breves).
+6. NUNCA inventes números ni fechas fuera de los registros verificados o del historial de conversación reciente.`;
   }
 
   private detectIntent(
@@ -231,7 +232,8 @@ INSTRUCCIONES CLAVE DE CONVERSACIÓN:
       lower.includes('falta') ||
       lower.includes('rechazo') ||
       lower.includes('revis') ||
-      lower.includes('diferencia')
+      lower.includes('diferencia') ||
+      lower.includes('autorizo')
     ) {
       return 'QUALITY_DISPUTE';
     }
@@ -278,6 +280,8 @@ INSTRUCCIONES CLAVE DE CONVERSACIÓN:
       messageLower.includes('pero esta no es')
     ) {
       agentResponse = `Disculpe la molestia, ${salutation}. Le respondo con total precisión según el sistema de báscula: su entrega del martes 20 de octubre (Guía GD-89412 por 18 bins de Cerezas Royal Dawn, 7.200 kg) se encuentra completamente APROBADA y ya fue LIQUIDADA el 24 de octubre por $18.450.000 CLP transferidos a su cuenta registrada. ¿Necesita que le reenviemos el comprobante de liquidación a su correo?`;
+    } else if (messageLower.includes('autorizo')) {
+      agentResponse = `Perfecto ${salutation}, su autorización ha quedado registrada en el ERP de Planta Curicó. Se actualiza el acta de recepción al conteo físico verificado por visión artificial (SAM 3.1) y se libera el camión de inmediato hacia el andén de descarga y enfriado.`;
     } else if (
       intent === 'PAYMENT_STATUS' ||
       messageLower.includes('martes') ||

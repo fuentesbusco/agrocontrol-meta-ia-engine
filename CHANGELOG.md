@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.8.0] - 2026-11-02
 
 ### Added
+- Implemented **Live Scale-to-WhatsApp Proactive Bridge** (`notifyWhatsAppFromScale` in `public/index.html`): whenever a reception is processed on the Yard Operator screen, an automated, color-coded WhatsApp notification card is pushed to the grower portal (`APPROVED`, `ALERTA DE ESPECIE`, or `DISCREPANCIA DE CANTIDAD`) and injected into the multi-turn agent memory.
+- Added 2 new quick-action inquiry chips in WhatsApp (`⚠️ "¿Qué pasó con la discrepancia?"` and `👍 "Autorizo recepcionar bins físicos"`) with ERP authorization handling in `AgentService`.
 - Created 1-command keyless judge replay and benchmark script (`scripts/demo-replay.ts` via `npm run demo:replay`) executing all 5 core multimodal and agentic scenarios deterministically without requiring external API keys.
 - Added official **Meta Global AI Hackathon 2026 — Submission Overview** provenance header and **Quantitative Benchmarks & Evaluation Metrics** table to `README.md` to support Stage 1 bonus prize flagging ($10k Open Weights, Best Agentic, Best Creative) and Stage 2 rubric verification (30/25/20/25 weights).
 - Added open-source `LICENSE` (MIT) in repository root and updated `package.json` metadata.
 
 ### Changed
+- Increased `max_tokens` to `2048` and added `<think>` tag sanitization in `AgentService` for `accounts/fireworks/models/muse-spark-open` so reasoning tokens never truncate the final Spanish output.
 - Sanitized `.env.example` removing placeholder credentials and documenting the 4-tier architecture (Primary Meta AI models `SAM 3.1`, `Muse Glimmer`, `Muse Spark 1.3 / Muse Spark Open` + Modal Serverless GPU, Fireworks AI Serverless, and Local Deterministic Fallback).
 - Updated `.gitignore` to exclude Python bytecode, Modal cache directories (`__pycache__/`, `*.py[cod]`, `.modal/`), and local submission notes.
 
