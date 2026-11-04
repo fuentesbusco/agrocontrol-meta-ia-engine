@@ -9,7 +9,7 @@
   - **`Muse Glimmer` (Meta Open-Weight Document OCR)** — Load-bearing open-weight extraction stage parsing dirty, handwritten Chilean agricultural dispatch guides (*Guías de Despacho de Campo* & *Recepción a Granel*) into structured JSON via Meta API and Modal Serverless (`glimmer_extract`).
   - **`SAM 3.1` (`SAM 3` Multimodal Vision Segmentation)** — Physical yard perception counting stacked wooden harvest bins and performing varietal/species fraud detection (identifying export cherries vs. incompatible apple loads) via Meta API and Modal Serverless (`sam3_predict`).
 - **Bonus Prize Categories Targeted**:
-  - **Best Build on Meta Open Weight Models ($10k)** · **Best Agentic Use-Case** · **Best Creative Build**
+  - **Best Build on Meta Open Weight Models (Meta Open Weights Track)** · **Best Agentic Use-Case** · **Best Creative Build**
 - **3-Minute Demo Video**: [https://youtu.be/oyPx62MJYmw](https://youtu.be/oyPx62MJYmw)
 - **Quickstart & Keyless Replay**: Run `cp .env.example .env` with your `META_API_KEY` / `FIREWORKS_API_KEY`, or run **`npm run demo:replay`** for an instant 1-command keyless verification of all 5 multimodal and agentic scenarios.
 
@@ -103,7 +103,7 @@ Evaluated across real field photographs from Curicó reception yards (`public/sa
 
 ## 🧪 Partner Verification: Open-Weight Serverless Stage (`modal_app/app.py`)
 
-To qualify for and facilitate verification of the **Best Build on Meta Open Weight Models ($10k)** category, the repository includes the complete Modal Serverless deployment in [`modal_app/app.py`](modal_app/app.py):
+To qualify for and facilitate verification of the **Best Build on Meta Open Weight Models (Meta Open Weights Track)** category, the repository includes the complete Modal Serverless deployment in [`modal_app/app.py`](modal_app/app.py):
 
 1. **`sam3_predict` (`POST`):** Executes visual feature segmentation, aspect-ratio geometry analysis, and HSV/RGB cherry-vs-apple color distribution to count stacked bins (`16`, `7`, `4`, or `18` bins) and flag incompatible fruit species.
 2. **`glimmer_extract` (`POST`):** Runs **Muse Glimmer** document extraction on dirty handwritten Chilean dispatch guides (`GD-92014` for *Sociedad Agrícola Correa Edwards Ltda*, RUT `77.402.012-8`) and vertical bulk intake receipts (`REC-GRANEL-4481`).
